@@ -104,8 +104,8 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
             erreurReseau = false;
         }
         else {
-            erreurReseau = true;
             Toast.makeText(getApplicationContext(), "Erreur de réseau.", Toast.LENGTH_LONG);
+            erreurReseau = true;
             this.createNetworkErrorFragment();
         }
 
