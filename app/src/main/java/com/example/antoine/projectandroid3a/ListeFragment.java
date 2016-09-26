@@ -2,6 +2,7 @@ package com.example.antoine.projectandroid3a;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -37,7 +38,7 @@ public class ListeFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_liste, container, false);
 
-
+        rootView.setBackgroundColor(Color.WHITE);
         mListView = (ListView)rootView.findViewById(R.id.listeView);
         setListView(rootView);
 
@@ -49,7 +50,7 @@ public class ListeFragment extends Fragment {
 
 
             list.add(new ListeData(dataList.get(i).getCompleteStreetNameWithArdt()
-                                        , R.drawable.bicycle));
+                                        , R.drawable.bicycle2));
 
         }
 
