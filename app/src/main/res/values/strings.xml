@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">ProjectAndroid3A</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="REQUETE_URL_HTTP">REQUETE_URL_HTTP</string>
+    <string name="Liste">List</string>
+    <string name="Carte">Map</string>
+    <string name="settings">Settings</string>
+    <string name="title_activity_test">Map</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="chargement_en_cours">Chargement en cours...</string>
+
+</resources>
