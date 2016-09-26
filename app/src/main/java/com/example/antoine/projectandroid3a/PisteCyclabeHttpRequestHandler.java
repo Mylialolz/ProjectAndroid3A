@@ -1,7 +1,6 @@
 package com.example.antoine.projectandroid3a;
 
-import android.util.Log;
-
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -27,6 +26,10 @@ public class PisteCyclabeHttpRequestHandler {
     private List<PisteReseauCyclable> mDataList;
     private boolean firstRequest;
 
+    public static final int REQUEST_BACK_OFF_MULTIPLIER = 1;
+    public static final int REQUEST_TIMEOUT = 15000;
+    public static final int REQUEST_NB_RETRY = 1;
+
     public PisteCyclabeHttpRequestHandler(String HttpRequest){
 
         this.setHttpRequest(HttpRequest);
@@ -47,7 +50,7 @@ public class PisteCyclabeHttpRequestHandler {
                     @Override
                     public void onResponse(JSONObject response) {
 
-                        Log.d("DEB", "Http response");
+                        //Log.d("DEB", "Http response");
 
                         try {
 
@@ -79,13 +82,18 @@ public class PisteCyclabeHttpRequestHandler {
                     public void onErrorResponse(VolleyError error) {
                         // TODO Auto-generated method stub
 
-                        Log.d("DEB", "no Http response");
+                        //Log.d("DEB", "no Http response");
                         activity.httpRequestReceived(false);
 
                     }
                 });
 
         // Add the request to the RequestQueue.
+
+        jsObjRequest.setRetryPolicy(new DefaultRetryPolicy(PisteCyclabeHttpRequestHandler.REQUEST_TIMEOUT
+                                                            , PisteCyclabeHttpRequestHandler.REQUEST_NB_RETRY
+                                                            , PisteCyclabeHttpRequestHandler.REQUEST_BACK_OFF_MULTIPLIER));
+
         requestQueue.add(jsObjRequest);
     }
 

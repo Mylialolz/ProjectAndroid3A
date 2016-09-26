@@ -6,12 +6,22 @@
     android:layout_height="match_parent"
     tools:context="com.example.antoine.projectandroid3a.MainActivity">
 
-    <FrameLayout
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        />
+
+   <FrameLayout
         android:id="@+id/mainFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentTop="true">
+       android:layout_below="@+id/tabLayout">
 
     </FrameLayout>
+
 
 </RelativeLayout>

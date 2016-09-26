@@ -1,6 +1,5 @@
 package com.example.antoine.projectandroid3a;
 
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
@@ -21,7 +20,6 @@ public class DetailsActivity extends AppCompatActivity implements DataFromHttpRe
 
     public final String lineSep = System.getProperty("line.separator");
 
-    private int voirMap;
     private List<PisteReseauCyclable> list;
 
     private PisteReseauCyclable mPiste;
@@ -33,7 +31,6 @@ public class DetailsActivity extends AppCompatActivity implements DataFromHttpRe
         setContentView(R.layout.activity_details);
         this.setTitle("Détails sur la piste");
 
-        voirMap = 0;
         String dataFromMainActivity = getIntent().getStringExtra(MainActivity.EXTRA_MESSAGE);
 
         Gson gson = new Gson();
@@ -54,6 +51,8 @@ public class DetailsActivity extends AppCompatActivity implements DataFromHttpRe
 
         setTextWithDetailedInformation();
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
     }
 
     private void setTextWithDetailedInformation() {
@@ -67,43 +66,42 @@ public class DetailsActivity extends AppCompatActivity implements DataFromHttpRe
         SpannableString _localisation = new SpannableString(localisation);
         _localisation.setSpan(new UnderlineSpan(), 0, localisation.length(), 0);
         txt.append(_localisation);
-        txt.append(" " + mPiste.getCompleteStreetNameWithArdt() + "." + lineSep + "\n");
+        txt.append(" " + mPiste.getCompleteStreetNameWithArdt() + "." + lineSep);
 
         String bois = "Zone boisée  :";
         SpannableString _bois = new SpannableString(bois);
         _bois.setSpan(new UnderlineSpan(), 0, bois.length(), 0);
         txt.append(_bois);
-        txt.append(" " + mPiste.getBois().toLowerCase() + "." + lineSep + "\n");
+        txt.append(" " + mPiste.getBois().toLowerCase() + "." + lineSep);
 
         String typePiste = "Type de piste :";
         SpannableString _typePiste = new SpannableString(typePiste);
         _typePiste.setSpan(new UnderlineSpan(), 0, typePiste.length(), 0);
         txt.append(_typePiste);
-        txt.append(" " + mPiste.getTypologie().toLowerCase() + "." + lineSep + "\n");
+        txt.append(" " + mPiste.getTypologie().toLowerCase() + "." + lineSep);
 
         String sensCirculation = "Sens de circulation :";
         SpannableString _sensCirculation = new SpannableString(sensCirculation);
         _sensCirculation.setSpan(new UnderlineSpan(), 0, sensCirculation.length(), 0);
         txt.append(_sensCirculation);
-        txt.append(" " + mPiste.getSens_velo().toLowerCase() + ".");
-    }
+        txt.append(" " + mPiste.getSens_velo().toLowerCase() + "." + lineSep + "\n");
 
+        txt.append("La piste cyclable est représentée sur la carte.");
 
-    private void finishActivity() {
-
-        Intent resultIntent = new Intent();
-        setResult(RESULT_OK, resultIntent);
-        resultIntent.putExtra(this.RESULT_INTENT_DETAILS_ACTIVITY, Integer.toString(voirMap));
-        finish();
     }
 
     @Override
     public void onBackPressed() {
 
-        voirMap = 0;
+        finish();
 
-        finishActivity();
+    }
 
+
+    @Override
+    public boolean onSupportNavigateUp(){
+        finish();
+        return true;
     }
 
     @Override

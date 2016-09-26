@@ -1,8 +1,8 @@
 package com.example.antoine.projectandroid3a;
 
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -16,20 +16,21 @@ import com.android.volley.toolbox.Volley;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements DataFromHttpRequest, TryHttpRequestAgain {
+public class MainActivity extends AppCompatActivity implements DataFromHttpRequest, TryHttpRequestAgain,TabLayout.OnTabSelectedListener {
 
     public static final String EXTRA_MESSAGE = "ID_ITEM";
     public static final String ITEM_TO_FOCUS_ON = "ITEM_TO_FOCUS_ON";
     private String mRequeteHTTP;
 
-    private int resultMapFromDetailsActivity;
-    private boolean detailsActivityFinished;
-
     private RequestQueue mRequestQueue;
     private PisteCyclabeHttpRequestHandler httpRequestHandler;
 
-    private int itemToFocusOnInMap;
+    private final int itemToFocusOnInMap = 0;
     private boolean erreurReseau;
+
+    private TabLayout tabLayout;
+
+    private final String[] tabs = {"Liste", "Carte"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,20 +38,52 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_main);
 
-        // mRequeteHTTP devrait etre recuperer via un intent
-        //mRequeteHTTP = "http://opendata.paris.fr/api/records/1.0/search/?dataset=reseau-cyclable&facet=arrdt&facet=statut&facet=typologie&facet=sens_velo&rows=2";
-
         UserInput searchParameter = (UserInput)getIntent().getSerializableExtra(LaunchActivity.REQUEST);
         mRequeteHTTP = searchParameter.constructRequest();
 
-        resultMapFromDetailsActivity = -1;
-        detailsActivityFinished = false;
         erreurReseau = true;
-        itemToFocusOnInMap = 0;
         mRequestQueue = Volley.newRequestQueue(this);
         httpRequestHandler = new PisteCyclabeHttpRequestHandler(mRequeteHTTP);
 
+        tabLayout = (TabLayout)findViewById(R.id.tabLayout);
+
+        for(String str : tabs) {
+            tabLayout.addTab(tabLayout.newTab().setText(str));
+        }
+
+        tabLayout.addOnTabSelectedListener(this);
+
         this.sendHttpRequest();
+
+    }
+
+    @Override
+    public void onTabSelected(TabLayout.Tab tab) {
+
+        int pos = tab.getPosition();
+        switch(pos){
+            case 0 :
+                if(!erreurReseau)
+                    this.createListFragment();
+                break;
+            case 1 :
+                if(!erreurReseau)
+                    this.createMapFragment();
+                break;
+
+
+
+        }
+
+    }
+
+    @Override
+    public void onTabUnselected(TabLayout.Tab tab) {
+
+    }
+
+    @Override
+    public void onTabReselected(TabLayout.Tab tab) {
 
     }
 
@@ -58,18 +91,8 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
     private void sendHttpRequest(){
 
         this.createLoadingFragment();
-
         final MainActivity activity = this;
-        final int delay = 30000;
-
-        new Thread(){
-            @Override
-            public void run(){
-
-                getHttpRequestHandler().launchHttpRequest(mRequestQueue, activity);
-            }
-
-        }.start();
+        getHttpRequestHandler().launchHttpRequest(mRequestQueue, activity);
 
     }
 
@@ -97,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
 
 
     private void createListFragment(){
-        itemToFocusOnInMap = 0;
+
         this.manageFragment(new ListeFragment());
     }
 
@@ -131,34 +154,6 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
     }
 
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data){
-        //super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == DetailsActivity.REQUEST_CODE_DETAILS_ACTIVITY && resultCode == RESULT_OK){
-
-            resultMapFromDetailsActivity = Integer.parseInt(data.getStringExtra(DetailsActivity.RESULT_INTENT_DETAILS_ACTIVITY));
-            detailsActivityFinished = true;
-
-        }
-    }
-
-
-    @Override
-    public void onResume(){
-
-        super.onResume();
-
-        if(detailsActivityFinished == true && resultMapFromDetailsActivity > 0) {
-
-            ListeFragment fragment = (ListeFragment)getSupportFragmentManager().findFragmentById(R.id.mainFragment);
-            itemToFocusOnInMap = fragment.getIndexOfLastItemClicked();
-            this.createMapFragment();
-            detailsActivityFinished = false;
-            resultMapFromDetailsActivity = -1;
-        }
-
-
-    }
 
 
     @Override
@@ -167,18 +162,10 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
         int id = item.getItemId();
 
         switch (id) {
-            case R.id.action_carte:
-                if(!erreurReseau)
-                    this.createMapFragment();
-                return true;
-
-            case R.id.action_liste :
-                if(!erreurReseau)
-                    this.createListFragment(); // affichage de la liste
-                return true;
             default:case R.id.action_settings :
                 return super.onOptionsItemSelected(item);
         }
+
     }
 
 

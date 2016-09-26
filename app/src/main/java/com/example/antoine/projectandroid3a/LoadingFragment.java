@@ -1,11 +1,13 @@
 package com.example.antoine.projectandroid3a;
 
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 
 /**
@@ -23,7 +25,11 @@ public class LoadingFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_loading, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_loading, container, false);
+        ProgressBar spinner = (ProgressBar)rootView.findViewById(R.id.progressBar);
+        spinner.getIndeterminateDrawable().setColorFilter(Color.parseColor("#FF358B"), android.graphics.PorterDuff.Mode.SRC_ATOP);;
+
+        return rootView;
     }
 
 }

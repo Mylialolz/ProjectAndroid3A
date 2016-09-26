@@ -73,9 +73,11 @@ public class ListeFragment extends Fragment {
                 indexOfLastItemClicked = position;
 
                 Intent intent = new Intent(getActivity(), DetailsActivity.class);
+
                 String detailedData = serializeDataForDetailsActivity(dataList.get(position));
                 intent.putExtra(MainActivity.EXTRA_MESSAGE, detailedData);
-                getActivity().startActivityForResult(intent, DetailsActivity.REQUEST_CODE_DETAILS_ACTIVITY);
+
+                getActivity().startActivity(intent);
 
             }
         });

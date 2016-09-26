@@ -82,7 +82,10 @@ public class CustomMapFragment extends Fragment {
                     LatLng latCourante = new LatLng(data.getGeo_point_2d()[0], data.getGeo_point_2d()[1]);
                     googleMap.addMarker(new MarkerOptions().position(latCourante).title(data.getCompleteStreetNameWithArdt()).snippet(data.getSens_velo()));
 
-                    PolylineOptions line = MapLineDrawer.drawLineBetweenGeoPoints(data.getGeo_shape().getCoordinates(), 4, Color.RED);
+                    PolylineOptions line = MapLineDrawer.drawLineBetweenGeoPoints(data.getGeo_shape().getCoordinates()
+                                                                                    , 4
+                                                                                    , Color.RED);
+
                     Polyline _line = googleMap.addPolyline(line);
                 }
 

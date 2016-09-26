@@ -1,25 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"><![CDATA[
 
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.antoine.cours.MainActivity" >
 
-    <item
-        android:id="@+id/action_liste"
-        android:title="@string/Liste"
-        android:orderInCategory="0"
-        app:showAsAction="always"
-        />
-
-    <item
-        android:id="@+id/action_carte"
-        android:title="@string/Carte"
-        android:orderInCategory="1"
-        app:showAsAction="always"
-        />
-
+    ]]>
     <item android:id="@+id/action_settings"
         android:title="@string/settings"
         android:orderInCategory="100"
