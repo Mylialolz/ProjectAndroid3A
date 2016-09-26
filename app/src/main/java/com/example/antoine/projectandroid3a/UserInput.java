@@ -10,6 +10,8 @@ public class UserInput implements Serializable{
 
     private String keyword;
     private int zipCode;
+    private static final String requestFirstPart = "http://opendata.paris.fr/api/records/1.0/search/?dataset=reseau-cyclable&q=";
+    private static final String requestLastPart = "&facet=arrdt&facet=statut&facet=typologie&facet=sens_velo&refine.arrdt=";
 
     public int getArr(){
         return zipCode;
@@ -18,7 +20,7 @@ public class UserInput implements Serializable{
     public void setArr(String input){
         /*Teste si le zipCode est non nul*/
         if(!input.matches("")){
-            zipCode = Integer.parseInt(input.toString());
+            zipCode = Integer.parseInt(input);
         }
         else{
             zipCode = 0;
@@ -36,6 +38,11 @@ public class UserInput implements Serializable{
 
     public void setKeyword(String input){
         keyword = input;
+    }
+
+    public String constructRequest(){
+        String request = requestFirstPart+keyword+requestLastPart+String.valueOf(zipCode);
+        return request;
     }
 
 }

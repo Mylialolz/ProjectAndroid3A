@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
         //mRequeteHTTP = "http://opendata.paris.fr/api/records/1.0/search/?dataset=reseau-cyclable&facet=arrdt&facet=statut&facet=typologie&facet=sens_velo&rows=2";
 
         UserInput searchParameter = (UserInput)getIntent().getSerializableExtra(LaunchActivity.REQUEST);
-
+        mRequeteHTTP = searchParameter.constructRequest();
 
         resultMapFromDetailsActivity = -1;
         detailsActivityFinished = false;

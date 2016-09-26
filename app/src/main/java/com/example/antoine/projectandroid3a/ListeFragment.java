@@ -49,7 +49,7 @@ public class ListeFragment extends Fragment {
 
 
             list.add(new ListeData(dataList.get(i).getCompleteStreetNameWithArdt()
-                                        , R.drawable.poulet));
+                                        , R.drawable.bicycle));
 
         }
 
