@@ -81,6 +81,30 @@ public class ListeFragment extends Fragment {
 
             }
         });
+
+
+        mListView.setLongClickable(true);
+
+        // reponse a un click long
+        mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                ListeData data = (ListeData) mListView.getItemAtPosition(position);
+
+                indexOfLastItemClicked = position;
+
+                Intent intent = new Intent(getActivity(), DetailsActivity.class);
+
+                String detailedData = serializeDataForDetailsActivity(dataList.get(position));
+                intent.putExtra(MainActivity.EXTRA_MESSAGE, detailedData);
+
+                getActivity().startActivity(intent);
+                return true;
+            }
+        });
+
+
+
     }
 
 

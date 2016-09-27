@@ -10,8 +10,8 @@
 
     <TextView
         android:text="TextView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="319dp"
+        android:layout_height="224dp"
         android:id="@+id/textDetails"
         tools:layout_constraintTop_creator="1"
         android:layout_marginStart="25dp"
@@ -24,14 +24,14 @@
         android:layout_marginRight="25dp"
         android:layout_marginTop="16dp"
         app:layout_constraintBottom_toTopOf="@+id/detailFragment"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintVertical_bias="0.22"
-        android:layout_marginBottom="16dp" />
+        app:layout_constraintVertical_bias="0.0"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintHorizontal_bias="0.43" />
 
     <RelativeLayout
         android:layout_width="384dp"
         android:id="@+id/detailFragment"
-        android:layout_height="283dp"
+        android:layout_height="235dp"
         tools:layout_constraintRight_creator="1"
         tools:layout_constraintBottom_creator="1"
         app:layout_constraintBottom_toBottomOf="parent"

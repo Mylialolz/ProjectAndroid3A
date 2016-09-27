@@ -6,7 +6,11 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -88,6 +92,27 @@ public class DetailsActivity extends AppCompatActivity implements DataFromHttpRe
 
         txt.append("La piste cyclable est représentée sur la carte.");
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_details_activity, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_favorite :
+                
+                Toast.makeText(getApplicationContext()
+                                , "La piste a été ajoutée en tant que favorie"
+                                , Toast.LENGTH_LONG).show();
+
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
