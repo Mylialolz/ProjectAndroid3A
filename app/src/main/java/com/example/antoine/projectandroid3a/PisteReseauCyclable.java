@@ -11,6 +11,10 @@ public class PisteReseauCyclable {
     @SerializedName("bois")
     private String bois;
 
+
+    @SerializedName("recordid");
+    private String recordid;
+
     @SerializedName("typologie")
     private String typologie;
 
@@ -129,6 +133,7 @@ public class PisteReseauCyclable {
     }
 
 
-
-
+    public String getRecordid() {
+        return recordid;
+    }
 }
