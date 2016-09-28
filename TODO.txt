@@ -1,0 +1,4 @@
+- fusionner toolbar at tabLayout
+- BDD locale (ou autre système) pour les pistes cyclables favories ->  faire les fonctions permettant d'ajouter ou de rechercher les pistes par "recordid"
+- utiliser un desgin de l'interface plus standard plus les activités (en particulier pour l'activité de recherche)
+- menu setting à construire : couleur, épaisseur, valeur zoom par défaut sur la piste + choix du type de map.
