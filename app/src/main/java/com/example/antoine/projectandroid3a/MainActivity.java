@@ -147,6 +147,21 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if(permissionInternet == false || permissionMap == false ){
+            this.createPermissionErrorFragment();
+        }
+
+        if(permissionInternet == true && permissionMap == true && erreurReseau == true){
+            this.createNetworkErrorFragment();
+        }
+
+
+    }
+
 
 
     private void sendHttpRequest(){
@@ -208,12 +223,19 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
         this.manageFragment(new NetworkErrorFragment());
     }
 
+    private void createPermissionErrorFragment(){
+        this.manageFragment(new PermissionErrorFragment());
+    }
+
+
     private void manageFragment(Fragment fragment){
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.mainFragment, fragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
+
+
 
 
     @Override
