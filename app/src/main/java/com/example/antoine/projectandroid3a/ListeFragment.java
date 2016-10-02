@@ -24,7 +24,8 @@ public class ListeFragment extends Fragment {
 
     private ListView mListView; // container pour afficher la liste
     private List<PisteReseauCyclable> dataList;
-    private int indexOfLastItemClicked;
+
+    private int mMapPermissionGranted;
 
 
     public ListeFragment() {
@@ -42,7 +43,7 @@ public class ListeFragment extends Fragment {
         mListView = (ListView)rootView.findViewById(R.id.listeView);
         setListView(rootView);
 
-        indexOfLastItemClicked = -1;
+        mMapPermissionGranted = Integer.valueOf(this.getArguments().getString(MainActivity.PERMISSION_MAP));
         dataList = tunnel.getDataList(); // recuperation de la reference sur la liste des donnees apres la requete http
 
         List<ListeData> list = new ArrayList<>();
@@ -68,14 +69,12 @@ public class ListeFragment extends Fragment {
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ListeData data = (ListeData) mListView.getItemAtPosition(position);
-
-                indexOfLastItemClicked = position;
-
                 Intent intent = new Intent(getActivity(), DetailsActivity.class);
 
                 String detailedData = serializeDataForDetailsActivity(dataList.get(position));
                 intent.putExtra(MainActivity.EXTRA_MESSAGE, detailedData);
+                intent.putExtra(MainActivity.PERMISSION_MAP, Integer.toString(mMapPermissionGranted));
+
 
                 getActivity().startActivity(intent);
 
@@ -89,10 +88,6 @@ public class ListeFragment extends Fragment {
         mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                ListeData data = (ListeData) mListView.getItemAtPosition(position);
-
-                indexOfLastItemClicked = position;
-
                 Intent intent = new Intent(getActivity(), DetailsActivity.class);
 
                 String detailedData = serializeDataForDetailsActivity(dataList.get(position));
@@ -121,10 +116,5 @@ public class ListeFragment extends Fragment {
 
         return gson.toJson(data);
 
-    }
-
-
-    public int getIndexOfLastItemClicked() {
-        return indexOfLastItemClicked;
     }
 }

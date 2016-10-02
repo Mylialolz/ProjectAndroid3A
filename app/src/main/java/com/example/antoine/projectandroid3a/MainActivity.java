@@ -1,10 +1,14 @@
 package com.example.antoine.projectandroid3a;
 
+import android.Manifest;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,10 +20,15 @@ import com.android.volley.toolbox.Volley;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements DataFromHttpRequest, TryHttpRequestAgain,TabLayout.OnTabSelectedListener {
+public class MainActivity extends AppCompatActivity implements DataFromHttpRequest, TryHttpRequestAgain,TabLayout.OnTabSelectedListener, PermissionErrorInterface {
 
     public static final String EXTRA_MESSAGE = "ID_ITEM";
     public static final String ITEM_TO_FOCUS_ON = "ITEM_TO_FOCUS_ON";
+    public static final String PERMISSION_MAP = "PERMISSION_MAP";
+    public static final int PERMISSION_REQUEST_MAP = 1;
+    public static final int PERMISSION_REQUEST_INTERNET = 2;
+
+
     private String mRequeteHTTP;
 
     private RequestQueue mRequestQueue;
@@ -31,6 +40,10 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
     private TabLayout tabLayout;
 
     private final String[] tabs = {"Liste", "Carte"};
+
+
+    private boolean permissionMap;
+    private boolean permissionInternet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,16 +57,35 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
         erreurReseau = true;
         mRequestQueue = Volley.newRequestQueue(this);
         httpRequestHandler = new PisteCyclabeHttpRequestHandler(mRequeteHTTP);
-
+        
         tabLayout = (TabLayout)findViewById(R.id.tabLayout);
-
         for(String str : tabs) {
             tabLayout.addTab(tabLayout.newTab().setText(str));
         }
-
         tabLayout.addOnTabSelectedListener(this);
 
-        this.sendHttpRequest();
+
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                                                                    != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    PERMISSION_REQUEST_MAP);
+        }
+        else {
+            permissionMap = true;
+        }
+
+
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET)
+                                        != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.INTERNET},
+                    PERMISSION_REQUEST_INTERNET);
+        }
+        else {
+            permissionInternet = true;
+            this.sendHttpRequest();
+        }
 
     }
 
@@ -63,16 +95,15 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
         int pos = tab.getPosition();
         switch(pos){
             case 0 :
-                if(!erreurReseau)
+                if(!erreurReseau && permissionInternet == true)
                     this.createListFragment();
                 break;
             case 1 :
-                if(!erreurReseau)
+                if(!erreurReseau
+                                && this.getDataList().size() > 0
+                                && permissionMap == true)
                     this.createMapFragment();
                 break;
-
-
-
         }
 
     }
@@ -87,12 +118,47 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
 
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_REQUEST_INTERNET: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    permissionInternet = true;
+
+                } else {
+                    permissionInternet = false;
+                }
+                return;
+            }
+            case PERMISSION_REQUEST_MAP: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                        permissionMap = true;
+
+                } else {
+                        permissionMap = false;
+                }
+                return;
+            }
+        }
+    }
+
+
 
     private void sendHttpRequest(){
 
-        this.createLoadingFragment();
-        final MainActivity activity = this;
-        getHttpRequestHandler().launchHttpRequest(mRequestQueue, activity);
+        if(permissionInternet == true) {
+            this.createLoadingFragment();
+            final MainActivity activity = this;
+            getHttpRequestHandler().launchHttpRequest(mRequestQueue, activity);
+        }
+        else {
+            Toast.makeText(getApplicationContext(), "Impossible de se connecter au serveur.", Toast.LENGTH_LONG).show();
+        }
 
     }
 
@@ -104,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
             erreurReseau = false;
         }
         else {
-            Toast.makeText(getApplicationContext(), "Erreur de réseau.", Toast.LENGTH_LONG);
+            Toast.makeText(getApplicationContext(), "Erreur de réseau.", Toast.LENGTH_LONG).show();
             erreurReseau = true;
             this.createNetworkErrorFragment();
         }
@@ -121,7 +187,11 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
 
     private void createListFragment(){
 
-        this.manageFragment(new ListeFragment());
+        ListeFragment list = new ListeFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(MainActivity.PERMISSION_MAP, Integer.toString(permissionMap == true ? 1 : 0));
+        list.setArguments(bundle);
+        this.manageFragment(list);
     }
 
     private void createMapFragment(){
@@ -197,4 +267,15 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
     }
 
 
+    @Override
+    public String getPermissionErrorMsg() {
+        String msg = "";
+        if(permissionInternet == false){
+            msg += "Impossible de récupérer les pistes cyclables depuis le serveur (permission non accordée).\n";
+        }
+        if(permissionMap == false){
+            msg += "Impossible de récupérer la localisation des pistes cyclables depuis le serveur (permission non accordée).\n";
+        }
+        return msg;
+    }
 }

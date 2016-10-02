@@ -17,7 +17,7 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DetailsActivity extends AppCompatActivity implements DataFromHttpRequest {
+public class DetailsActivity extends AppCompatActivity implements DataFromHttpRequest, PermissionErrorInterface {
 
     public static final String RESULT_INTENT_DETAILS_ACTIVITY = "VOIR_MAP";
     public static final int REQUEST_CODE_DETAILS_ACTIVITY = 1;
@@ -34,28 +34,37 @@ public class DetailsActivity extends AppCompatActivity implements DataFromHttpRe
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_details);
         this.setTitle("Détails sur la piste");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        String dataFromMainActivity = getIntent().getStringExtra(MainActivity.EXTRA_MESSAGE);
+        final String dataFromMainActivity = getIntent().getStringExtra(MainActivity.EXTRA_MESSAGE);
+        final int mapPermissionGranted = Integer.valueOf(getIntent().getStringExtra(MainActivity.PERMISSION_MAP));
 
         Gson gson = new Gson();
         mPiste = gson.fromJson(dataFromMainActivity, PisteReseauCyclable.class);
-
         list = new ArrayList<>();
         list.add(mPiste);
-
-        CustomMapFragment mapFragment = new CustomMapFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString(MainActivity.ITEM_TO_FOCUS_ON, Integer.toString(0));
-        mapFragment.setArguments(bundle);
-
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.detailFragment, mapFragment);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
-
         setTextWithDetailedInformation();
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if(mapPermissionGranted > 0) {
+            CustomMapFragment mapFragment = new CustomMapFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString(MainActivity.ITEM_TO_FOCUS_ON, Integer.toString(0));
+            mapFragment.setArguments(bundle);
+
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.detailFragment, mapFragment);
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
+        }
+        else {
+
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.detailFragment, new PermissionErrorFragment());
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
+
+        }
+
 
     }
 
@@ -133,5 +142,13 @@ public class DetailsActivity extends AppCompatActivity implements DataFromHttpRe
     public List<PisteReseauCyclable> getDataList() {
         return list;
     }
+
+    @Override
+    public String getPermissionErrorMsg() {
+        return "Impossible d'afficher la carte associée à cet élément (permission non accordée)";
+    }
+
+
+
 
 }
