@@ -2,6 +2,7 @@ package com.example.antoine.projectandroid3a;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -10,13 +11,15 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Created by coren on 29/09/2016.
+ * Created by antoine on 29/09/2016.
  */
 
 public class SharedPreference {
 
-    public static final String PREF_TAG = "OUIAPP";
-    public static final String FAVORITES = "OuiStops_Favorites";
+    public static final String PREF_TAG = "PISTEAPP";
+    public static final String FAVORITES = "PISTE_Favorites";
+    public static final int ERREUR_DEJA_PRESENTE = 0;
+    public static final int ERREUR_INCONNUE = 1;
 
     public SharedPreference() {
         super();
@@ -26,7 +29,7 @@ public class SharedPreference {
         SharedPreferences sharedPref;
         SharedPreferences.Editor editor;
 
-        sharedPref = context.getSharedPreferences(PREF_TAG, Context.MODE_PRIVATE);
+        sharedPref = context.getApplicationContext().getSharedPreferences(PREF_TAG, Context.MODE_PRIVATE);
         editor = sharedPref.edit();
 
         Gson gson = new Gson();
@@ -34,29 +37,27 @@ public class SharedPreference {
         editor.commit();
     }
 
-    public void addFavorite(Context context, PisteReseauCyclable stop){
+    public void addFavorite(Context context, PisteReseauCyclable piste){
         List<PisteReseauCyclable> favorites = getFavorites(context);
         if(favorites == null)
             favorites = new ArrayList<PisteReseauCyclable>();
-        favorites.add(stop);
+        favorites.add(piste);
         saveFavorites(context, favorites);
     }
 
-    public void removeFavorite(Context context, PisteReseauCyclable stop){
+    public void removeFavorite(Context context, PisteReseauCyclable piste){
         ArrayList<PisteReseauCyclable> favorites = getFavorites(context);
         if(favorites != null){
-            favorites.remove(stop);
+            favorites.remove(piste);
             saveFavorites(context,favorites);
         }
     }
 
     public ArrayList<PisteReseauCyclable> getFavorites(Context context){
         SharedPreferences sharedPref;
-        SharedPreferences.Editor editor;
         List<PisteReseauCyclable> favorites;
 
-        sharedPref = context.getSharedPreferences(PREF_TAG, Context.MODE_PRIVATE);
-        editor = sharedPref.edit();
+        sharedPref = context.getApplicationContext().getSharedPreferences(PREF_TAG, Context.MODE_PRIVATE);
 
         if(sharedPref.contains(FAVORITES)){
             String jsonFavorites = sharedPref.getString(FAVORITES, null);
@@ -71,4 +72,60 @@ public class SharedPreference {
 
         return (ArrayList<PisteReseauCyclable>) favorites;
     }
+
+
+    public boolean isItemInFavorites(PisteReseauCyclable data, Context context) {
+
+        ArrayList<PisteReseauCyclable> listeFavoris = getFavorites(context);
+
+        boolean isFavored = false;
+
+        if(listeFavoris != null)
+            isFavored = checkItem(listeFavoris, data);
+        else
+            isFavored = false;
+
+
+        return isFavored;
+    }
+
+    private boolean checkItem(ArrayList<PisteReseauCyclable> list, PisteReseauCyclable data){
+        boolean ret = false;
+        for(int i = 0; i < list.size(); ++i){
+            if(list.get(i).equals(data)) {
+                ret = true;
+                return ret;
+            }
+        }
+        return ret;
+    }
+
+    public void ajoutValide(Context context){
+        Toast.makeText(context
+                        , "La piste a été ajoutée en tant que favorie"
+                        , Toast.LENGTH_LONG).show();
+    }
+
+
+    public void printToastErreur(Context context, int codeErreur){
+
+        switch (codeErreur)
+        {
+            case SharedPreference.ERREUR_DEJA_PRESENTE :
+                    Toast.makeText(context
+                                    , "La piste figure déjà parmi les pistes favories"
+                                    , Toast.LENGTH_LONG).show();
+                break;
+
+            case SharedPreference.ERREUR_INCONNUE :
+                Toast.makeText(context
+                                    , "La piste n'a pas pu être ajoutée"
+                                    , Toast.LENGTH_LONG).show();
+
+                break;
+        }
+        return;
+    }
+
+
 }

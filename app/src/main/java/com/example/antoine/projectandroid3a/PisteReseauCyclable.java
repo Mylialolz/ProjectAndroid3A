@@ -8,11 +8,28 @@ import com.google.gson.annotations.SerializedName;
 
 public class PisteReseauCyclable {
 
+    @Override
+    public boolean equals(Object obj) {
+        super.equals(obj);
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        PisteReseauCyclable other = (PisteReseauCyclable) obj;
+
+        if(other.getGeo_point_2d()[0] != getGeo_point_2d()[0]){
+            return false;
+        }
+        if(other.getGeo_point_2d()[0] != getGeo_point_2d()[0])
+            return false;
+
+        return true;
+    }
+
     @SerializedName("bois")
     private String bois;
-
-    @SerializedName("recordid")
-    private String recordid;
 
     @SerializedName("typologie")
     private String typologie;
@@ -50,34 +67,57 @@ public class PisteReseauCyclable {
     }
 
     public String getBois() {
+
+        if(bois.matches(""))
+            return "Inconnu";
+
         return bois;
     }
 
     public String getTypologie() {
+
+        if(typologie.matches(""))
+            return "Inconnu";
         return typologie;
     }
 
     public int getArrdt() {
+
+        if(arrdt == 0)
+            return -1;
+
         return arrdt;
     }
 
     public String getStatut() {
+        if(statut.matches(""))
+            return "Inconnu";
         return statut;
     }
 
     public String getSens_velo() {
+
+        if(sens_velo.matches(""))
+            return "Inconnu";
         return sens_velo;
     }
 
     public String getNom_voie() {
+
+        if(nom_voie.matches(""))
+            return "Inconnu";
         return nom_voie;
     }
 
     public String getType_voie() {
+        if(type_voie.matches(""))
+            return "Inconnu";
         return type_voie;
     }
 
     public String getTypologie_simple() {
+        if(typologie_simple.matches(""))
+            return "Inconnu";
         return typologie_simple;
     }
 
@@ -131,8 +171,4 @@ public class PisteReseauCyclable {
 
     }
 
-
-    public String getRecordid() {
-        return recordid;
-    }
 }

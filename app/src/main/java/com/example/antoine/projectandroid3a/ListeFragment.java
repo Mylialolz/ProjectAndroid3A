@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import com.google.gson.Gson;
@@ -24,8 +25,10 @@ public class ListeFragment extends Fragment {
 
     private ListView mListView; // container pour afficher la liste
     private List<PisteReseauCyclable> dataList;
-
+    private ListAdapter mAdapter;
     private int mMapPermissionGranted;
+    private boolean mFavorisAffiches;
+    private SharedPreference favoris;
 
 
     public ListeFragment() {
@@ -42,13 +45,14 @@ public class ListeFragment extends Fragment {
         rootView.setBackgroundColor(Color.WHITE);
         mListView = (ListView)rootView.findViewById(R.id.listeView);
         setListView(rootView);
+        favoris = new SharedPreference();
 
         mMapPermissionGranted = Integer.valueOf(this.getArguments().getString(MainActivity.PERMISSION_MAP));
+        mFavorisAffiches = Integer.valueOf(this.getArguments().getString(MainActivity.PRINTING_FAVORITES)) == 1 ? true : false;
         dataList = tunnel.getDataList(); // recuperation de la reference sur la liste des donnees apres la requete http
 
         List<ListeData> list = new ArrayList<>();
         for(int i = 0; i < dataList.size(); ++i){
-
 
             list.add(new ListeData(dataList.get(i).getCompleteStreetNameWithArdt()
                                         , R.drawable.bicycle2));
@@ -56,8 +60,8 @@ public class ListeFragment extends Fragment {
         }
 
 
-        ListeAdapter adapter = new ListeAdapter(getActivity(), list); // affichage de la liste
-        mListView.setAdapter(adapter);
+        mAdapter = new ListeAdapter(getActivity(), list); // affichage de la liste
+        mListView.setAdapter(mAdapter);
 
         // Inflate the layout for this fragment
         return rootView;
@@ -69,14 +73,17 @@ public class ListeFragment extends Fragment {
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getActivity(), DetailsActivity.class);
 
-                String detailedData = serializeDataForDetailsActivity(dataList.get(position));
-                intent.putExtra(MainActivity.EXTRA_MESSAGE, detailedData);
-                intent.putExtra(MainActivity.PERMISSION_MAP, Integer.toString(mMapPermissionGranted));
+                if(position >= 0) {
+                    Intent intent = new Intent(getActivity(), DetailsActivity.class);
+
+                    String detailedData = serializeDataForDetailsActivity(dataList.get(position));
+                    intent.putExtra(MainActivity.EXTRA_MESSAGE, detailedData);
+                    intent.putExtra(MainActivity.PERMISSION_MAP, Integer.toString(mMapPermissionGranted));
 
 
-                getActivity().startActivity(intent);
+                    getActivity().startActivity(intent);
+                }
 
             }
         });
@@ -88,21 +95,35 @@ public class ListeFragment extends Fragment {
         mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getActivity(), DetailsActivity.class);
 
-                String detailedData = serializeDataForDetailsActivity(dataList.get(position));
-                intent.putExtra(MainActivity.EXTRA_MESSAGE, detailedData);
+                if(position >= 0 && !mFavorisAffiches) {
 
-                getActivity().startActivity(intent);
+                    PisteReseauCyclable data = dataList.get(position);
+                    Context context = getActivity().getApplicationContext();
+                    boolean estEnFavori = favoris.isItemInFavorites(data, context);
+
+                    if(estEnFavori){
+                        favoris.printToastErreur(context, SharedPreference.ERREUR_DEJA_PRESENTE);
+                    }
+                    else {
+                        favoris.ajoutValide(context);
+                        favoris.addFavorite(context, data);
+                    }
+
+                }
+
+                if(position >= 0 && mFavorisAffiches){
+
+                    //ArrayList<PisteReseauCyclable> list = favoris.getFavorites(getActivity().getApplicationContext());
+                    favoris.removeFavorite(getActivity().getApplicationContext(), dataList.get(position));
+
+                }
+
                 return true;
             }
         });
 
-
-
     }
-
-
 
      @Override
      public void onAttach(Context context){

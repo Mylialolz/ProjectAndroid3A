@@ -5,6 +5,8 @@ import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -15,11 +17,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements DataFromHttpRequest, TryHttpRequestAgain,TabLayout.OnTabSelectedListener, PermissionErrorInterface {
@@ -27,6 +31,7 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
     public static final String EXTRA_MESSAGE = "ID_ITEM";
     public static final String ITEM_TO_FOCUS_ON = "ITEM_TO_FOCUS_ON";
     public static final String PERMISSION_MAP = "PERMISSION_MAP";
+    public static final String PRINTING_FAVORITES = "PRINTING_FAVORITES";
     public static final int PERMISSION_REQUEST_MAP = 1;
     public static final int PERMISSION_REQUEST_INTERNET = 2;
 
@@ -37,15 +42,16 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
     private PisteCyclabeHttpRequestHandler httpRequestHandler;
 
     private final int itemToFocusOnInMap = 0;
-    private boolean erreurReseau;
 
     private TabLayout tabLayout;
 
     private final String[] tabs = {"Liste", "Carte"};
 
-
     private boolean permissionMap;
     private boolean permissionInternet;
+    private SharedPreference mFavorites;
+    private boolean affichageFavoris;
+    private List<PisteReseauCyclable> mList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,12 +61,43 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
 
         UserInput searchParameter = (UserInput)getIntent().getSerializableExtra(LaunchActivity.REQUEST);
         mRequeteHTTP = searchParameter.constructRequest();
-
+        mList = new ArrayList<>();
+        mFavorites = new SharedPreference();
         permissionMap = false;
         permissionInternet = false;
-        erreurReseau = true;
         mRequestQueue = Volley.newRequestQueue(this);
         httpRequestHandler = new PisteCyclabeHttpRequestHandler(mRequeteHTTP);
+        affichageFavoris = true;
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.floatingActionButton);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (mList.size() != 0)
+                    mList.clear();
+
+                if(affichageFavoris) {
+
+                    createLoadingFragment();
+                    Snackbar.make(view, "Affichage de vos pistes favories !", Snackbar.LENGTH_LONG).show();
+                    ArrayList<PisteReseauCyclable> list = mFavorites.getFavorites(getApplicationContext());
+                    for (int i = 0; i < list.size(); ++i) {
+                        mList.add(list.get(i));
+                    }
+                    createListFragment();
+                    affichageFavoris = false;
+                }
+                else {
+                    createLoadingFragment();
+                    Snackbar.make(view, "Retour aux données courantes", Snackbar.LENGTH_LONG).show();
+                    mList = httpRequestHandler.getDataList();
+                    createListFragment();
+                    affichageFavoris = true;
+                }
+            }
+        });
+
         
         tabLayout = (TabLayout)findViewById(R.id.tabLayout);
         for(String str : tabs) {
@@ -69,9 +106,6 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
         tabLayout.addOnTabSelectedListener(this);
 
         askForPermissions();
-
-
-
 
     }
 
@@ -134,14 +168,24 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
         int pos = tab.getPosition();
         switch(pos){
             case 0 :
-                if(!erreurReseau && permissionInternet == true)
+                if(this.getDataList().size() > 0 && permissionInternet == true)
                     this.createListFragment();
+                else {
+                    if(this.getDataList().size() == 0 && permissionInternet == false)
+                        this.createPermissionErrorFragment();
+                    if(this.getDataList().size() == 0 && permissionInternet == true)
+                        this.createNetworkErrorFragment();
+                }
                 break;
             case 1 :
-                if(!erreurReseau
-                                && this.getDataList().size() > 0
-                                && permissionMap == true)
+                if(this.getDataList().size() > 0 && permissionMap == true)
                     this.createMapFragment();
+                else {
+                    if(this.getDataList().size() == 0 && permissionMap == false)
+                        this.createPermissionErrorFragment();
+                    if(this.getDataList().size() == 0 && permissionMap == true)
+                        this.createNetworkErrorFragment();
+                }
                 break;
         }
 
@@ -190,11 +234,8 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
     public void onResume() {
         super.onResume();
 
-        if(permissionInternet == false || permissionMap == false ){
+        if(permissionInternet == false && permissionMap == false ){
             this.createPermissionErrorFragment();
-        }
-        if(erreurReseau == true){
-            this.createNetworkErrorFragment();
         }
     }
 
@@ -219,12 +260,11 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
     public void httpRequestReceived(boolean requestReceived){
 
         if(requestReceived){
+            mList = httpRequestHandler.getDataList();
             this.createListFragment();
-            erreurReseau = false;
         }
         else {
             Toast.makeText(getApplicationContext(), "Erreur de réseau.", Toast.LENGTH_LONG).show();
-            erreurReseau = true;
             this.createNetworkErrorFragment();
         }
 
@@ -243,6 +283,7 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
         ListeFragment list = new ListeFragment();
         Bundle bundle = new Bundle();
         bundle.putString(MainActivity.PERMISSION_MAP, Integer.toString(permissionMap == true ? 1 : 0));
+        bundle.putString(MainActivity.PRINTING_FAVORITES, Integer.toString(affichageFavoris == true ? 1 : 0));
         list.setArguments(bundle);
         this.manageFragment(list);
     }
@@ -309,16 +350,13 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
 
     @Override
     public List<PisteReseauCyclable> getDataList() {
-        return httpRequestHandler.getDataList();
+        return mList;
     }
 
 
     @Override
     public void tryHttpRequestAfterFail() {
-
         this.sendHttpRequest();
-
-
     }
 
     @Override

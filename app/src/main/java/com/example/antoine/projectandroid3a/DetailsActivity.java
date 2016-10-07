@@ -10,7 +10,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -27,8 +26,9 @@ public class DetailsActivity extends AppCompatActivity implements DataFromHttpRe
     public final String lineSep = System.getProperty("line.separator");
 
     private List<PisteReseauCyclable> list;
-
     private PisteReseauCyclable mPiste;
+    private Menu mMenu;
+    private final SharedPreference favorites = new SharedPreference();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,23 +109,42 @@ public class DetailsActivity extends AppCompatActivity implements DataFromHttpRe
 
 
 
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_details_activity, menu);
+        super.onCreateOptionsMenu(menu);
+
+        mMenu = menu;
+        MenuItem favoritesMenu = mMenu.findItem(R.id.action_favorite);
+        final boolean isFavored = favorites.isItemInFavorites(mPiste, getApplicationContext());
+        if(isFavored){
+            favoritesMenu.setIcon(R.drawable.favored);
+        }
+        else {
+            favoritesMenu.setIcon(R.drawable.favorite);
+        }
+
         return true;
     }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_favorite :
-                
-                Toast.makeText(getApplicationContext()
-                                , "La piste a été ajoutée en tant que favorie"
-                                , Toast.LENGTH_LONG).show();
+
+                final boolean isFavored = favorites.isItemInFavorites(mPiste, getApplicationContext());
+                if(isFavored != true){
+                    favorites.ajoutValide(getApplicationContext());
+                    favorites.addFavorite(getApplication(), mPiste);
+                    mMenu.findItem(R.id.action_favorite).setIcon(R.drawable.favored);
+                }
+                else {
+                    favorites.printToastErreur(getApplicationContext(), SharedPreference.ERREUR_DEJA_PRESENTE);
+                }
+
 
                 break;
         }

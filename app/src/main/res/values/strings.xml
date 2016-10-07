@@ -10,5 +10,6 @@
     <string name="title_activity_test">Map</string>
     <string name="title_activity_maps">Map</string>
     <string name="chargement_en_cours">Chargement en cours...</string>
+    <string name="title_activity_lel">lel</string>
 
 </resources>
