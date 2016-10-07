@@ -21,6 +21,8 @@ public class DetailsActivity extends AppCompatActivity implements DataFromHttpRe
 
     public static final String RESULT_INTENT_DETAILS_ACTIVITY = "VOIR_MAP";
     public static final int REQUEST_CODE_DETAILS_ACTIVITY = 1;
+    public static final String PREFS_FILE = "PREF";
+    public static final String PREFS_KEY ="RECORD";
 
     public final String lineSep = System.getProperty("line.separator");
 
@@ -45,6 +47,12 @@ public class DetailsActivity extends AppCompatActivity implements DataFromHttpRe
         list.add(mPiste);
         setTextWithDetailedInformation();
 
+        initMapFragment(mapPermissionGranted);
+
+
+    }
+
+    private void initMapFragment(int mapPermissionGranted) {
         if(mapPermissionGranted > 0) {
             CustomMapFragment mapFragment = new CustomMapFragment();
             Bundle bundle = new Bundle();
@@ -64,8 +72,6 @@ public class DetailsActivity extends AppCompatActivity implements DataFromHttpRe
             fragmentTransaction.commit();
 
         }
-
-
     }
 
     private void setTextWithDetailedInformation() {
@@ -99,9 +105,11 @@ public class DetailsActivity extends AppCompatActivity implements DataFromHttpRe
         txt.append(_sensCirculation);
         txt.append(" " + mPiste.getSens_velo().toLowerCase() + "." + lineSep + "\n");
 
-        txt.append("La piste cyclable est représentée sur la carte.");
-
     }
+
+
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

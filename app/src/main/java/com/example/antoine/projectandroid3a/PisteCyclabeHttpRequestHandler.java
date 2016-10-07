@@ -26,9 +26,9 @@ public class PisteCyclabeHttpRequestHandler {
     private List<PisteReseauCyclable> mDataList;
     private boolean firstRequest;
 
-    public static final int REQUEST_BACK_OFF_MULTIPLIER = 1;
-    public static final int REQUEST_TIMEOUT = 15000;
-    public static final int REQUEST_NB_RETRY = 1;
+    private static final int REQUEST_BACK_OFF_MULTIPLIER = 1;
+    private static final int REQUEST_TIMEOUT = 15000;
+    private static final int REQUEST_NB_RETRY = 1;
 
     public PisteCyclabeHttpRequestHandler(String HttpRequest){
 
@@ -50,10 +50,7 @@ public class PisteCyclabeHttpRequestHandler {
                     @Override
                     public void onResponse(JSONObject response) {
 
-                        //Log.d("DEB", "Http response");
-
                         try {
-
 
                             JSONArray jsonArray = response.getJSONArray("records");
 

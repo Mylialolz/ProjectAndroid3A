@@ -1,6 +1,7 @@
 package com.example.antoine.projectandroid3a;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -54,6 +56,8 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
         UserInput searchParameter = (UserInput)getIntent().getSerializableExtra(LaunchActivity.REQUEST);
         mRequeteHTTP = searchParameter.constructRequest();
 
+        permissionMap = false;
+        permissionInternet = false;
         erreurReseau = true;
         mRequestQueue = Volley.newRequestQueue(this);
         httpRequestHandler = new PisteCyclabeHttpRequestHandler(mRequeteHTTP);
@@ -64,12 +68,17 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
         }
         tabLayout.addOnTabSelectedListener(this);
 
+        askForPermissions();
 
+
+
+
+    }
+
+    private void askForPermissions() {
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                                                                     != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    PERMISSION_REQUEST_MAP);
+            askMapPermission();
         }
         else {
             permissionMap = true;
@@ -78,15 +87,45 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
 
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET)
                                         != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.INTERNET},
-                    PERMISSION_REQUEST_INTERNET);
+            askInternetPermission();
         }
         else {
             permissionInternet = true;
-            this.sendHttpRequest();
+            sendHttpRequest();
         }
+    }
 
+    private void askInternetPermission() {
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
+        alertBuilder.setTitle("Permission accès internet.");
+        alertBuilder.setMessage("Nous avons besoin de cette permission pour trouver toutes les pistes cyclables.");
+        alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                ActivityCompat.requestPermissions(MainActivity.this,
+                        new String[]{Manifest.permission.INTERNET},
+                        PERMISSION_REQUEST_INTERNET);
+            }
+        });
+        AlertDialog alert = alertBuilder.create();
+        alert.show();
+    }
+
+    private void askMapPermission() {
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
+        alertBuilder.setTitle("Permission affichage carte.");
+        alertBuilder.setMessage("Nous avons besoin de cette permission pour afficher les éléments sur la carte et lier votre position au GPS.");
+        alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                ActivityCompat.requestPermissions(MainActivity.this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        PERMISSION_REQUEST_MAP);
+            }
+        });
+
+        AlertDialog alert = alertBuilder.create();
+        alert.show();
     }
 
     @Override
@@ -154,12 +193,9 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
         if(permissionInternet == false || permissionMap == false ){
             this.createPermissionErrorFragment();
         }
-
-        if(permissionInternet == true && permissionMap == true && erreurReseau == true){
+        if(erreurReseau == true){
             this.createNetworkErrorFragment();
         }
-
-
     }
 
 
@@ -172,7 +208,9 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
             getHttpRequestHandler().launchHttpRequest(mRequestQueue, activity);
         }
         else {
-            Toast.makeText(getApplicationContext(), "Impossible de se connecter au serveur.", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext()
+                            , "Impossible de se connecter au serveur."
+                            , Toast.LENGTH_LONG).show();
         }
 
     }

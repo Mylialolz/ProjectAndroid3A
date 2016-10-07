@@ -11,7 +11,6 @@ public class PisteReseauCyclable {
     @SerializedName("bois")
     private String bois;
 
-
     @SerializedName("recordid")
     private String recordid;
 

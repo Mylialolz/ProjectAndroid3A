@@ -90,7 +90,7 @@ public class CustomMapFragment extends Fragment {
                 }
 
                 // For zooming automatically to the location of the marker
-                CameraPosition cameraPosition = new CameraPosition.Builder().target(markerToFocusOn).zoom(12).build();
+                CameraPosition cameraPosition = new CameraPosition.Builder().target(markerToFocusOn).zoom(10).build();
                 googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
             }
         });
