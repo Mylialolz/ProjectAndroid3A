@@ -3,11 +3,14 @@ package com.example.antoine.projectandroid3a;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -17,7 +20,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.List;
@@ -36,7 +38,10 @@ public class CustomMapFragment extends Fragment {
 
     private MapView mMapView;
     private GoogleMap googleMap;
+    private ProgressBar progressBar;
 
+    private Handler mHandler = new Handler();
+    private int mProgressStatus = 0;
 
     public CustomMapFragment() {
         // Required empty public constructor
@@ -58,7 +63,12 @@ public class CustomMapFragment extends Fragment {
         mMapView = (MapView) rootView.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
 
-        mMapView.onResume(); // needed to get the map to display immediately
+        //mMapView.onResume(); // needed to get the map to display immediately
+
+        progressBar = (ProgressBar) rootView.findViewById(R.id.progressBarMapFragment);
+        progressBar.setProgress(0);
+        progressBar.setMax(mDataList.size());
+        new MyTask().execute(mDataList.size());
 
         try {
             MapsInitializer.initialize(getActivity().getApplicationContext());
@@ -86,8 +96,13 @@ public class CustomMapFragment extends Fragment {
                                                                                     , 4
                                                                                     , Color.RED);
 
-                    Polyline _line = googleMap.addPolyline(line);
+                    googleMap.addPolyline(line);
+
+                    mProgressStatus++;
                 }
+
+                progressBar.setVisibility(View.GONE);
+                mMapView.onResume();
 
                 // For zooming automatically to the location of the marker
                 CameraPosition cameraPosition = new CameraPosition.Builder().target(markerToFocusOn).zoom(10).build();
@@ -97,6 +112,59 @@ public class CustomMapFragment extends Fragment {
 
         return rootView;
     }
+
+    class MyTask extends AsyncTask<Integer, Integer, String> {
+        @Override
+        protected String doInBackground(Integer... params) {
+            while(mProgressStatus < params[0]) {
+                try {
+                    Thread.sleep(50);
+
+                    publishProgress(mProgressStatus);
+                    //progressBar.setProgress(mProgressStatus);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            return "Task Completed.";
+        }
+        @Override
+        protected void onPostExecute(String result) {
+            progressBar.setVisibility(View.GONE);
+        }
+        @Override
+        protected void onPreExecute() {
+            progressBar.setVisibility(View.VISIBLE);
+        }
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            progressBar.setProgress(0);
+            progressBar.setMax(mDataList.size());
+            progressBar.setProgress(values[0]);
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     @Override
     public void onResume() {
@@ -127,5 +195,7 @@ public class CustomMapFragment extends Fragment {
         super.onAttach(context);
         tunnel = (DataFromHttpRequest) context;
     }
+
+
 
 }

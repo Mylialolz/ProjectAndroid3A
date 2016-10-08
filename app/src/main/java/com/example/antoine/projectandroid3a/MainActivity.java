@@ -26,7 +26,7 @@ import com.android.volley.toolbox.Volley;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements DataFromHttpRequest, TryHttpRequestAgain,TabLayout.OnTabSelectedListener, PermissionErrorInterface {
+public class MainActivity extends AppCompatActivity implements DataFromHttpRequest, TryHttpRequestAgain,TabLayout.OnTabSelectedListener, ErrorInterface {
 
     public static final String EXTRA_MESSAGE = "ID_ITEM";
     public static final String ITEM_TO_FOCUS_ON = "ITEM_TO_FOCUS_ON";
@@ -51,12 +51,16 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
     private boolean permissionInternet;
     private SharedPreference mFavorites;
     private boolean affichageFavoris;
+    private FloatingActionButton mFab;
+
     private List<PisteReseauCyclable> mList;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_main);
 
         UserInput searchParameter = (UserInput)getIntent().getSerializableExtra(LaunchActivity.REQUEST);
@@ -69,31 +73,36 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
         httpRequestHandler = new PisteCyclabeHttpRequestHandler(mRequeteHTTP);
         affichageFavoris = true;
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.floatingActionButton);
-        fab.setOnClickListener(new View.OnClickListener() {
+        mFab = (FloatingActionButton) findViewById(R.id.floatingActionButton);
+        mFab.setImageResource(R.drawable.favorite_white);
+        mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                if (mList.size() != 0)
-                    mList.clear();
-
                 if(affichageFavoris) {
-
-                    createLoadingFragment();
-                    Snackbar.make(view, "Affichage de vos pistes favories !", Snackbar.LENGTH_LONG).show();
-                    ArrayList<PisteReseauCyclable> list = mFavorites.getFavorites(getApplicationContext());
-                    for (int i = 0; i < list.size(); ++i) {
-                        mList.add(list.get(i));
-                    }
-                    createListFragment();
                     affichageFavoris = false;
+                    mFab.setImageResource(R.drawable.done_white);
+                    createLoadingFragment();
+                    Snackbar.make(view, "Affichage de vos pistes favorites !", Snackbar.LENGTH_LONG).show();
+                    ArrayList<PisteReseauCyclable> list = mFavorites.getFavorites(getApplicationContext());
+                    mList = list;
+                    if(mList.size() > 0)
+                        createListFragment();
+                    else
+                        createErrorFragment();
                 }
                 else {
+                    affichageFavoris = true;
+                    mFab.setImageResource(R.drawable.favorite_white);
                     createLoadingFragment();
                     Snackbar.make(view, "Retour aux données courantes", Snackbar.LENGTH_LONG).show();
                     mList = httpRequestHandler.getDataList();
+                    if(mList.size() > 0)
+                        createListFragment();
+                    else
+                        createErrorFragment();
                     createListFragment();
-                    affichageFavoris = true;
+
                 }
             }
         });
@@ -168,21 +177,25 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
         int pos = tab.getPosition();
         switch(pos){
             case 0 :
+                mFab.show();
                 if(this.getDataList().size() > 0 && permissionInternet == true)
                     this.createListFragment();
                 else {
                     if(this.getDataList().size() == 0 && permissionInternet == false)
-                        this.createPermissionErrorFragment();
+                        this.createErrorFragment();
                     if(this.getDataList().size() == 0 && permissionInternet == true)
                         this.createNetworkErrorFragment();
                 }
                 break;
             case 1 :
+                affichageFavoris = true;
+                mFab.setImageResource(R.drawable.favorite_white);
+                mFab.hide();
                 if(this.getDataList().size() > 0 && permissionMap == true)
                     this.createMapFragment();
                 else {
                     if(this.getDataList().size() == 0 && permissionMap == false)
-                        this.createPermissionErrorFragment();
+                        this.createErrorFragment();
                     if(this.getDataList().size() == 0 && permissionMap == true)
                         this.createNetworkErrorFragment();
                 }
@@ -235,7 +248,7 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
         super.onResume();
 
         if(permissionInternet == false && permissionMap == false ){
-            this.createPermissionErrorFragment();
+            this.createErrorFragment();
         }
     }
 
@@ -298,12 +311,20 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
         this.manageFragment(mapFragment);
     }
 
+
+    @Override
+    public boolean onSupportNavigateUp(){
+        finish();
+        return true;
+    }
+
+
     private void createNetworkErrorFragment(){
         this.manageFragment(new NetworkErrorFragment());
     }
 
-    private void createPermissionErrorFragment(){
-        this.manageFragment(new PermissionErrorFragment());
+    private void createErrorFragment(){
+        this.manageFragment(new ErrorFragment());
     }
 
 
@@ -366,14 +387,25 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
 
 
     @Override
-    public String getPermissionErrorMsg() {
+    public String getErrorMsg() {
         String msg = "";
+
         if(permissionInternet == false){
             msg += "Impossible de récupérer les pistes cyclables depuis le serveur (permission non accordée).\n";
         }
         if(permissionMap == false){
-            msg += "Impossible de récupérer la localisation des pistes cyclables depuis le serveur (permission non accordée).\n";
+            msg += "Impossible de récupérer la localisation des pistes cyclables depuis le serveur (permission non accordée).";
         }
+
+        if(permissionMap == true && permissionInternet == true && getDataList().size() == 0 && affichageFavoris == true){
+            msg = "Aucune donnée n'a pu être récupérée. Veuillez réessayer.";
+        }
+
+        if(permissionMap == true && permissionInternet == true && getDataList().size() == 0 && affichageFavoris == false){
+            msg = "Vous n'avez enregistrer aucune piste en tant que favorite jusqu'à présent";
+        }
+
         return msg;
+
     }
 }

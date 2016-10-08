@@ -128,4 +128,12 @@ public class SharedPreference {
     }
 
 
+    public void toastConfirmationSuppressionFavoris(Context context){
+        Toast.makeText(context
+                , "Piste favorie supprimée"
+                , Toast.LENGTH_LONG).show();
+    }
+
+
+
 }

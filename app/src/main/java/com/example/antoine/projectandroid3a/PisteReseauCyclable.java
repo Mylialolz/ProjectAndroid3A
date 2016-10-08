@@ -68,6 +68,9 @@ public class PisteReseauCyclable {
 
     public String getBois() {
 
+        if(bois == null)
+            return "Inconnu";
+
         if(bois.matches(""))
             return "Inconnu";
 
@@ -76,8 +79,12 @@ public class PisteReseauCyclable {
 
     public String getTypologie() {
 
+        if(typologie == null)
+            return "Inconnu";
+
         if(typologie.matches(""))
             return "Inconnu";
+
         return typologie;
     }
 
@@ -90,12 +97,19 @@ public class PisteReseauCyclable {
     }
 
     public String getStatut() {
+
+        if(statut == null)
+            return "Inconnu";
+
         if(statut.matches(""))
             return "Inconnu";
         return statut;
     }
 
     public String getSens_velo() {
+
+        if(sens_velo == null)
+            return "Inconnu";
 
         if(sens_velo.matches(""))
             return "Inconnu";
@@ -104,24 +118,40 @@ public class PisteReseauCyclable {
 
     public String getNom_voie() {
 
+        if(nom_voie == null)
+            return "Inconnu";
+
         if(nom_voie.matches(""))
             return "Inconnu";
+
         return nom_voie;
     }
 
     public String getType_voie() {
+
+        if(type_voie == null)
+            return "Inconnu";
+
         if(type_voie.matches(""))
             return "Inconnu";
         return type_voie;
     }
 
     public String getTypologie_simple() {
+
+        if(typologie_simple == null)
+            return "Inconnu";
+
         if(typologie_simple.matches(""))
             return "Inconnu";
         return typologie_simple;
     }
 
     public String getShape_len() {
+        if(shape_len == null)
+            return "Inconnu";
+        if(shape_len.matches(""))
+            return "Inconnu";
         return shape_len;
     }
 
@@ -170,5 +200,6 @@ public class PisteReseauCyclable {
         return intro + localisation + bois + typePiste + sensCirculation;
 
     }
+
 
 }

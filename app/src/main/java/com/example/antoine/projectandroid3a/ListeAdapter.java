@@ -40,5 +40,9 @@ public class ListeAdapter extends ArrayAdapter<ListeData>  {
     }
 
 
+    @Override
+    public void notifyDataSetChanged() {
+        super.notifyDataSetChanged();
+    }
 
 }

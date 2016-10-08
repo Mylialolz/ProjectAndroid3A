@@ -16,7 +16,7 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DetailsActivity extends AppCompatActivity implements DataFromHttpRequest, PermissionErrorInterface {
+public class DetailsActivity extends AppCompatActivity implements DataFromHttpRequest, ErrorInterface {
 
     public static final String RESULT_INTENT_DETAILS_ACTIVITY = "VOIR_MAP";
     public static final int REQUEST_CODE_DETAILS_ACTIVITY = 1;
@@ -67,7 +67,7 @@ public class DetailsActivity extends AppCompatActivity implements DataFromHttpRe
         else {
 
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.detailFragment, new PermissionErrorFragment());
+            fragmentTransaction.replace(R.id.detailFragment, new ErrorFragment());
             fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
 
@@ -119,10 +119,10 @@ public class DetailsActivity extends AppCompatActivity implements DataFromHttpRe
         MenuItem favoritesMenu = mMenu.findItem(R.id.action_favorite);
         final boolean isFavored = favorites.isItemInFavorites(mPiste, getApplicationContext());
         if(isFavored){
-            favoritesMenu.setIcon(R.drawable.favored);
+            favoritesMenu.setIcon(R.drawable.favored_white);
         }
         else {
-            favoritesMenu.setIcon(R.drawable.favorite);
+            favoritesMenu.setIcon(R.drawable.favorite_white);
         }
 
         return true;
@@ -139,7 +139,7 @@ public class DetailsActivity extends AppCompatActivity implements DataFromHttpRe
                 if(isFavored != true){
                     favorites.ajoutValide(getApplicationContext());
                     favorites.addFavorite(getApplication(), mPiste);
-                    mMenu.findItem(R.id.action_favorite).setIcon(R.drawable.favored);
+                    mMenu.findItem(R.id.action_favorite).setIcon(R.drawable.favored_white);
                 }
                 else {
                     favorites.printToastErreur(getApplicationContext(), SharedPreference.ERREUR_DEJA_PRESENTE);
@@ -170,12 +170,9 @@ public class DetailsActivity extends AppCompatActivity implements DataFromHttpRe
         return list;
     }
 
+
     @Override
-    public String getPermissionErrorMsg() {
+    public String getErrorMsg() {
         return "Impossible d'afficher la carte associée à cet élément (permission non accordée)";
     }
-
-
-
-
 }

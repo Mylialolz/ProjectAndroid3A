@@ -13,11 +13,11 @@ import android.widget.TextView;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class PermissionErrorFragment extends Fragment {
+public class ErrorFragment extends Fragment {
 
-    private PermissionErrorInterface listener;
+    private ErrorInterface listener;
 
-    public PermissionErrorFragment() {
+    public ErrorFragment() {
         // Required empty public constructor
     }
 
@@ -28,7 +28,7 @@ public class PermissionErrorFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_permission_error, container, false);
 
-        String msg = listener.getPermissionErrorMsg();
+        String msg = listener.getErrorMsg();
 
         TextView txt = (TextView)rootView.findViewById(R.id.permTxtError);
         txt.setText(msg);
@@ -40,7 +40,7 @@ public class PermissionErrorFragment extends Fragment {
     @Override
     public void onAttach(Context context){
         super.onAttach(context);
-        listener = (PermissionErrorInterface) context;
+        listener = (ErrorInterface) context;
     }
 
 }

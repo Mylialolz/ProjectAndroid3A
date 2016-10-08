@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import com.google.gson.Gson;
@@ -25,7 +24,7 @@ public class ListeFragment extends Fragment {
 
     private ListView mListView; // container pour afficher la liste
     private List<PisteReseauCyclable> dataList;
-    private ListAdapter mAdapter;
+    private ListeAdapter mAdapter;
     private int mMapPermissionGranted;
     private boolean mFavorisAffiches;
     private SharedPreference favoris;
@@ -96,11 +95,11 @@ public class ListeFragment extends Fragment {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 
-                if(position >= 0 && !mFavorisAffiches) {
+                if(position >= 0 && mFavorisAffiches) {
 
                     PisteReseauCyclable data = dataList.get(position);
                     Context context = getActivity().getApplicationContext();
-                    boolean estEnFavori = favoris.isItemInFavorites(data, context);
+                    final boolean estEnFavori = favoris.isItemInFavorites(data, context);
 
                     if(estEnFavori){
                         favoris.printToastErreur(context, SharedPreference.ERREUR_DEJA_PRESENTE);
@@ -112,11 +111,13 @@ public class ListeFragment extends Fragment {
 
                 }
 
-                if(position >= 0 && mFavorisAffiches){
+                if(position >= 0 && !mFavorisAffiches){
 
-                    //ArrayList<PisteReseauCyclable> list = favoris.getFavorites(getActivity().getApplicationContext());
                     favoris.removeFavorite(getActivity().getApplicationContext(), dataList.get(position));
-
+                    favoris.toastConfirmationSuppressionFavoris(getActivity().getApplicationContext());
+                    ListeData objet = (ListeData) mListView.getItemAtPosition(position);
+                    mAdapter.remove(objet);
+                    mAdapter.notifyDataSetChanged();
                 }
 
                 return true;
