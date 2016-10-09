@@ -118,6 +118,11 @@ public class ListeFragment extends Fragment {
                     ListeData objet = (ListeData) mListView.getItemAtPosition(position);
                     mAdapter.remove(objet);
                     mAdapter.notifyDataSetChanged();
+
+                    if(mAdapter.isEmpty()){
+                        ((MainActivity)getActivity()).setErrorMsg(getString(R.string.ERREUR_AUCUN_FAVORI));
+                    }
+
                 }
 
                 return true;

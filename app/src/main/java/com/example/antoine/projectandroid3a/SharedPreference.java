@@ -102,7 +102,7 @@ public class SharedPreference {
 
     public void toastValide(Context context){
         Toast.makeText(context
-                        , "La piste a été ajoutée en tant que favorie"
+                        , "La piste a été ajoutée en tant que favorite"
                         , Toast.LENGTH_LONG).show();
     }
 
@@ -113,7 +113,7 @@ public class SharedPreference {
         {
             case SharedPreference.ERREUR_DEJA_PRESENTE :
                     Toast.makeText(context
-                                    , "La piste figure déjà parmi les pistes favories"
+                                    , "La piste figure déjà parmi les pistes favorites"
                                     , Toast.LENGTH_LONG).show();
                 break;
 

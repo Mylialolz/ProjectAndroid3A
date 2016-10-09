@@ -35,6 +35,8 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
     public static final String PRINTING_FAVORITES = "PRINTING_FAVORITES";
     public static final int PERMISSION_REQUEST_MAP = 1;
     public static final int PERMISSION_REQUEST_INTERNET = 2;
+    public static final int TAB_MAP = 1;
+    public static final int TAB_LISTE = 0;
 
 
     private String mRequeteHTTP;
@@ -47,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
     private TabLayout tabLayout;
 
     private final String[] tabs = {"Liste", "Carte"};
+    private int currentTab = 0;
 
     private boolean permissionMap;
     private boolean permissionInternet;
@@ -56,6 +59,8 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
 
     private List<PisteReseauCyclable> mList;
     private boolean emptyResultFromHttpRequest;
+
+    private String mMsgError ="";
 
 
     @Override
@@ -69,10 +74,6 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
         if(getSupportActionBar() != null){
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-
-        /*Drawable upArrow = ContextCompat.getDrawable(getApplicationContext(), R.drawable.abc_ic_ab_back_material);
-        upArrow.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.white), PorterDuff.Mode.SRC_ATOP);
-        getSupportActionBar().setHomeAsUpIndicator(upArrow);*/
 
         UserInput searchParameter = (UserInput)getIntent().getSerializableExtra(LaunchActivity.REQUEST);
         mRequeteHTTP = searchParameter.constructRequest();
@@ -100,8 +101,10 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
                     mList = list;
                     if(mList.size() > 0)
                         createListFragment();
-                    else
+                    else {
+                        setErrorMsg(getString(R.string.ERREUR_AUCUN_FAVORI));
                         createErrorFragment();
+                    }
                 }
                 else {
                     affichageFavoris = true;
@@ -111,9 +114,10 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
                     mList = httpRequestHandler.getDataList();
                     if(mList.size() > 0)
                         createListFragment();
-                    else
+                    else {
+                        setErrorMsg(getString(R.string.ERREUR_NO_DATA));
                         createErrorFragment();
-                    createListFragment();
+                    }
 
                 }
             }
@@ -191,23 +195,27 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
         int pos = tab.getPosition();
         switch(pos){
             case 0 :
+                currentTab = TAB_LISTE;
                 mFab.show();
                 if(emptyResultFromHttpRequest == false && permissionInternet == true)
                     this.createListFragment();
                 else {
-                    if(permissionInternet == false || emptyResultFromHttpRequest == true)
+                    if(permissionInternet == false || emptyResultFromHttpRequest == true) {
+                        setErrorMsg(getString(R.string.ERREUR_NO_DATA));
                         this.createErrorFragment();
+                    }
                 }
                 break;
             case 1 :
-                affichageFavoris = true;
-                mFab.setImageResource(R.drawable.favorite_white);
+                currentTab = TAB_MAP;
                 mFab.hide();
                 if(emptyResultFromHttpRequest == false && permissionMap == true)
                     this.createMapFragment();
                 else {
-                    if(permissionMap == false || emptyResultFromHttpRequest == true)
+                    if(permissionMap == false || emptyResultFromHttpRequest == true) {
+                        setErrorMsg(getString(R.string.ERREUR_NO_DATA));
                         this.createErrorFragment();
+                    }
                 }
                 break;
         }
@@ -256,10 +264,6 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
     @Override
     public void onResume() {
         super.onResume();
-
-        if(permissionInternet == false && permissionMap == false ){
-            this.createErrorFragment();
-        }
     }
 
 
@@ -290,6 +294,7 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
                 this.createListFragment();
             }
             else {
+                setErrorMsg(getString(R.string.ERREUR_NO_DATA));
                 this.createErrorFragment();
             }
         }
@@ -330,8 +335,31 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
 
 
     @Override
-    public boolean onSupportNavigateUp(){
-        finish();
+    public boolean onSupportNavigateUp() {
+
+        switch (currentTab) {
+            case TAB_LISTE :
+            if (!affichageFavoris) {
+                affichageFavoris = true;
+                mFab.setImageResource(R.drawable.favorite_white);
+                createLoadingFragment();
+                Snackbar.make(getWindow().getDecorView().getRootView(), "Retour aux données courantes", Snackbar.LENGTH_LONG).show();
+                mList = httpRequestHandler.getDataList();
+                if (mList.size() > 0)
+                    createListFragment();
+                else {
+                    setErrorMsg(getString(R.string.ERREUR_NO_DATA));
+                    createErrorFragment();
+                }
+            }
+            else
+                finish();
+                break;
+            case TAB_MAP :
+                tabLayout.getTabAt(TAB_LISTE).select();
+                break;
+        }
+
         return true;
     }
 
@@ -351,6 +379,7 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
+
 
 
 
@@ -399,27 +428,12 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
     }
 
 
+    public void setErrorMsg(String m){
+        this.mMsgError = m;
+    }
+
     @Override
     public String getErrorMsg() {
-        String msg = "";
-
-        if(permissionInternet == false){
-            msg += "Impossible de récupérer les pistes cyclables depuis le serveur (permission non accordée).\n";
-        }
-        if(permissionMap == false){
-            msg += "Impossible de récupérer la localisation des pistes cyclables depuis le serveur (permission non accordée).\n";
-        }
-
-        if(permissionMap == true && permissionInternet == true && emptyResultFromHttpRequest == true){
-            msg += "Aucune donnée n'a pu être récupérée. Veuillez relancer votre recherche.\n";
-        }
-
-        if(affichageFavoris == true && mList.size() == 0)
-        {
-            msg = "Aucun favori enregistré !";
-        }
-
-        return msg;
-
+        return mMsgError;
     }
 }

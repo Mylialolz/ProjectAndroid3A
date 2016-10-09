@@ -11,5 +11,9 @@
     <string name="title_activity_maps">Map</string>
     <string name="chargement_en_cours">Chargement en cours...</string>
     <string name="title_activity_lel">lel</string>
+    <string name="ERREUR_AUCUN_FAVORI">Aucun favori enregistré !</string>
+    <string name="ERREUR_NO_DATA">Aucune donnée n\'a pu être récupérée. Veuillez relancer votre recherche.\n</string>
+    <string name="ERREUR_PERMISSION_MAP">Impossible de récupérer la localisation des pistes cyclables depuis le serveur (permission non accordée).\n</string>
+    <string name="ERREUR_PERMISSION_INTERNET">Impossible de récupérer les pistes cyclables depuis le serveur (permission non accordée).\n</string>
 
 </resources>
