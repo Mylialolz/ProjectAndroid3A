@@ -137,12 +137,12 @@ public class DetailsActivity extends AppCompatActivity implements DataFromHttpRe
 
                 final boolean isFavored = favorites.isItemInFavorites(mPiste, getApplicationContext());
                 if(isFavored != true){
-                    favorites.ajoutValide(getApplicationContext());
+                    favorites.toastValide(getApplicationContext());
                     favorites.addFavorite(getApplication(), mPiste);
                     mMenu.findItem(R.id.action_favorite).setIcon(R.drawable.favored_white);
                 }
                 else {
-                    favorites.printToastErreur(getApplicationContext(), SharedPreference.ERREUR_DEJA_PRESENTE);
+                    favorites.toastErreur(getApplicationContext(), SharedPreference.ERREUR_DEJA_PRESENTE);
                 }
 
 

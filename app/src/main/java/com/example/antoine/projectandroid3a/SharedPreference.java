@@ -100,14 +100,14 @@ public class SharedPreference {
         return ret;
     }
 
-    public void ajoutValide(Context context){
+    public void toastValide(Context context){
         Toast.makeText(context
                         , "La piste a été ajoutée en tant que favorie"
                         , Toast.LENGTH_LONG).show();
     }
 
 
-    public void printToastErreur(Context context, int codeErreur){
+    public void toastErreur(Context context, int codeErreur){
 
         switch (codeErreur)
         {

@@ -66,6 +66,7 @@ public class CustomMapFragment extends Fragment {
         //mMapView.onResume(); // needed to get the map to display immediately
 
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBarMapFragment);
+        progressBar.setIndeterminate(true);
         progressBar.setProgress(0);
         progressBar.setMax(mDataList.size());
         new MyTask().execute(mDataList.size());
@@ -113,7 +114,7 @@ public class CustomMapFragment extends Fragment {
         return rootView;
     }
 
-    class MyTask extends AsyncTask<Integer, Integer, String> {
+    class MyTask extends AsyncTask<Integer, Integer, String> {  // ne fonctionne pas
         @Override
         protected String doInBackground(Integer... params) {
             while(mProgressStatus < params[0]) {

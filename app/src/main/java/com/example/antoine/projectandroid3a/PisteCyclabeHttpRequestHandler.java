@@ -66,7 +66,11 @@ public class PisteCyclabeHttpRequestHandler {
                                 getDataList().add(data);
 
                             }
-                            activity.httpRequestReceived(true);
+
+                            if(getDataList().size() > 0)
+                                activity.httpRequestReceived(true, false);
+                            else
+                                activity.httpRequestReceived(true, true);
 
                         }
                         catch (JSONException e){
@@ -80,7 +84,7 @@ public class PisteCyclabeHttpRequestHandler {
                         // TODO Auto-generated method stub
 
                         //Log.d("DEB", "no Http response");
-                        activity.httpRequestReceived(false);
+                        activity.httpRequestReceived(false, false);
 
                     }
                 });

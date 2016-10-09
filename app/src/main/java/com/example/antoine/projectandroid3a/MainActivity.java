@@ -14,6 +14,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -54,20 +55,31 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
     private FloatingActionButton mFab;
 
     private List<PisteReseauCyclable> mList;
+    private boolean emptyResultFromHttpRequest;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_main);
+
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        if(getSupportActionBar() != null){
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
+        /*Drawable upArrow = ContextCompat.getDrawable(getApplicationContext(), R.drawable.abc_ic_ab_back_material);
+        upArrow.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.white), PorterDuff.Mode.SRC_ATOP);
+        getSupportActionBar().setHomeAsUpIndicator(upArrow);*/
 
         UserInput searchParameter = (UserInput)getIntent().getSerializableExtra(LaunchActivity.REQUEST);
         mRequeteHTTP = searchParameter.constructRequest();
         mList = new ArrayList<>();
         mFavorites = new SharedPreference();
         permissionMap = false;
+        emptyResultFromHttpRequest = true;
         permissionInternet = false;
         mRequestQueue = Volley.newRequestQueue(this);
         httpRequestHandler = new PisteCyclabeHttpRequestHandler(mRequeteHTTP);
@@ -114,6 +126,7 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
         }
         tabLayout.addOnTabSelectedListener(this);
 
+
         askForPermissions();
 
     }
@@ -133,6 +146,7 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
             askInternetPermission();
         }
         else {
+
             permissionInternet = true;
             sendHttpRequest();
         }
@@ -178,26 +192,22 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
         switch(pos){
             case 0 :
                 mFab.show();
-                if(this.getDataList().size() > 0 && permissionInternet == true)
+                if(emptyResultFromHttpRequest == false && permissionInternet == true)
                     this.createListFragment();
                 else {
-                    if(this.getDataList().size() == 0 && permissionInternet == false)
+                    if(permissionInternet == false || emptyResultFromHttpRequest == true)
                         this.createErrorFragment();
-                    if(this.getDataList().size() == 0 && permissionInternet == true)
-                        this.createNetworkErrorFragment();
                 }
                 break;
             case 1 :
                 affichageFavoris = true;
                 mFab.setImageResource(R.drawable.favorite_white);
                 mFab.hide();
-                if(this.getDataList().size() > 0 && permissionMap == true)
+                if(emptyResultFromHttpRequest == false && permissionMap == true)
                     this.createMapFragment();
                 else {
-                    if(this.getDataList().size() == 0 && permissionMap == false)
+                    if(permissionMap == false || emptyResultFromHttpRequest == true)
                         this.createErrorFragment();
-                    if(this.getDataList().size() == 0 && permissionMap == true)
-                        this.createNetworkErrorFragment();
                 }
                 break;
         }
@@ -270,11 +280,18 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
     }
 
 
-    public void httpRequestReceived(boolean requestReceived){
+    public void httpRequestReceived(boolean requestReceived, boolean emptyResult){
+
+        emptyResultFromHttpRequest = emptyResult;
 
         if(requestReceived){
-            mList = httpRequestHandler.getDataList();
-            this.createListFragment();
+            if(emptyResultFromHttpRequest == false) {
+                mList = httpRequestHandler.getDataList();
+                this.createListFragment();
+            }
+            else {
+                this.createErrorFragment();
+            }
         }
         else {
             Toast.makeText(getApplicationContext(), "Erreur de réseau.", Toast.LENGTH_LONG).show();
@@ -361,10 +378,6 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
     }
 
 
-    public RequestQueue getRequestQueue() {
-        return mRequestQueue;
-    }
-
     public PisteCyclabeHttpRequestHandler getHttpRequestHandler() {
         return httpRequestHandler;
     }
@@ -394,15 +407,16 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
             msg += "Impossible de récupérer les pistes cyclables depuis le serveur (permission non accordée).\n";
         }
         if(permissionMap == false){
-            msg += "Impossible de récupérer la localisation des pistes cyclables depuis le serveur (permission non accordée).";
+            msg += "Impossible de récupérer la localisation des pistes cyclables depuis le serveur (permission non accordée).\n";
         }
 
-        if(permissionMap == true && permissionInternet == true && getDataList().size() == 0 && affichageFavoris == true){
-            msg = "Aucune donnée n'a pu être récupérée. Veuillez réessayer.";
+        if(permissionMap == true && permissionInternet == true && emptyResultFromHttpRequest == true){
+            msg += "Aucune donnée n'a pu être récupérée. Veuillez relancer votre recherche.\n";
         }
 
-        if(permissionMap == true && permissionInternet == true && getDataList().size() == 0 && affichageFavoris == false){
-            msg = "Vous n'avez enregistrer aucune piste en tant que favorite jusqu'à présent";
+        if(affichageFavoris == true && mList.size() == 0)
+        {
+            msg = "Aucun favori enregistré !";
         }
 
         return msg;

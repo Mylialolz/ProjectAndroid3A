@@ -102,10 +102,10 @@ public class ListeFragment extends Fragment {
                     final boolean estEnFavori = favoris.isItemInFavorites(data, context);
 
                     if(estEnFavori){
-                        favoris.printToastErreur(context, SharedPreference.ERREUR_DEJA_PRESENTE);
+                        favoris.toastErreur(context, SharedPreference.ERREUR_DEJA_PRESENTE);
                     }
                     else {
-                        favoris.ajoutValide(context);
+                        favoris.toastValide(context);
                         favoris.addFavorite(context, data);
                     }
 
