@@ -81,6 +81,8 @@ public class CustomMapFragment extends Fragment {
             @Override
             public void onMapReady(GoogleMap mMap) {
                 googleMap = mMap;
+                if(MainActivity.TYPE_MAP.equals("SATELLITE")){mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);}
+                else{mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);}
 
                 // For showing a move to my location button
                 googleMap.setMyLocationEnabled(true);

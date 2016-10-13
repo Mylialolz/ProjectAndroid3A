@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
     public static final int PERMISSION_REQUEST_INTERNET = 2;
     public static final int TAB_MAP = 1;
     public static final int TAB_LISTE = 0;
+    public static String TYPE_MAP = "NORMAL";
 
 
     private String mRequeteHTTP;
@@ -404,7 +405,13 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
         int id = item.getItemId();
 
         switch (id) {
-            default:case R.id.action_settings :
+            case R.id.map_typeMap:
+                TYPE_MAP = "NORMAL";
+                return true;
+            case R.id.map_typeEarth:
+                TYPE_MAP = "SATELLITE";
+                return true;
+            default:
                 return super.onOptionsItemSelected(item);
         }
 

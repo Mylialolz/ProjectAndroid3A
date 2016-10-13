@@ -1,15 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <![CDATA[
+    <!--<![CDATA[
 
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.antoine.cours.MainActivity" >
 
-    ]]>
-    <item android:id="@+id/action_settings"
-        android:title="@string/settings"
+    ]]> -->
+    <item android:id="@+id/map_typeMap"
+        android:title="Carte"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+        android:visible="true"
+        android:enabled="true" />
+
+    <item android:id="@+id/map_typeEarth"
+        android:title="Satellite"
         android:orderInCategory="100"
         app:showAsAction="never"
         android:visible="true"
