@@ -401,7 +401,7 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
+        // Handle item selection and select the MAP Type
         int id = item.getItemId();
 
         switch (id) {
