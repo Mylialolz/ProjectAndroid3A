@@ -407,9 +407,11 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
         switch (id) {
             case R.id.map_typeMap:
                 TYPE_MAP = "NORMAL";
+                tabLayout.getTabAt(TAB_LISTE).select();
                 return true;
             case R.id.map_typeEarth:
                 TYPE_MAP = "SATELLITE";
+                tabLayout.getTabAt(TAB_LISTE).select();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
