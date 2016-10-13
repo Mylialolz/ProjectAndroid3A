@@ -22,6 +22,9 @@ import java.util.List;
 
 public class PisteCyclabeHttpRequestHandler {
 
+
+    public static final String TAG_VOLLEY_REQUEST = "TAG_VOLLEY_REQUEST";
+
     private String HttpRequest;
     private List<PisteReseauCyclable> mDataList;
     private boolean firstRequest;
@@ -90,6 +93,8 @@ public class PisteCyclabeHttpRequestHandler {
                 });
 
         // Add the request to the RequestQueue.
+
+        jsObjRequest.setTag(PisteCyclabeHttpRequestHandler.TAG_VOLLEY_REQUEST);
 
         jsObjRequest.setRetryPolicy(new DefaultRetryPolicy(PisteCyclabeHttpRequestHandler.REQUEST_TIMEOUT
                                                             , PisteCyclabeHttpRequestHandler.REQUEST_NB_RETRY

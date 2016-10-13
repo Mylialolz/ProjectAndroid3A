@@ -86,6 +86,21 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
         httpRequestHandler = new PisteCyclabeHttpRequestHandler(mRequeteHTTP);
         affichageFavoris = true;
 
+        setFloatingActionButton();
+        setTabLayout();
+        askForPermissions();
+
+    }
+
+    private void setTabLayout() {
+        tabLayout = (TabLayout)findViewById(R.id.tabLayout);
+        for(String str : tabs) {
+            tabLayout.addTab(tabLayout.newTab().setText(str));
+        }
+        tabLayout.addOnTabSelectedListener(this);
+    }
+
+    private void setFloatingActionButton() {
         mFab = (FloatingActionButton) findViewById(R.id.floatingActionButton);
         mFab.setImageResource(R.drawable.favorite_white);
         mFab.setOnClickListener(new View.OnClickListener() {
@@ -122,17 +137,6 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
                 }
             }
         });
-
-        
-        tabLayout = (TabLayout)findViewById(R.id.tabLayout);
-        for(String str : tabs) {
-            tabLayout.addTab(tabLayout.newTab().setText(str));
-        }
-        tabLayout.addOnTabSelectedListener(this);
-
-
-        askForPermissions();
-
     }
 
     private void askForPermissions() {
@@ -353,6 +357,7 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
                 }
             }
             else
+                mRequestQueue.cancelAll(PisteCyclabeHttpRequestHandler.TAG_VOLLEY_REQUEST);
                 finish();
                 break;
             case TAB_MAP :
@@ -371,7 +376,6 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
     private void createErrorFragment(){
         this.manageFragment(new ErrorFragment());
     }
-
 
     private void manageFragment(Fragment fragment){
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
@@ -424,6 +428,7 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
 
     @Override
     public void onBackPressed(){
+        mRequestQueue.cancelAll(PisteCyclabeHttpRequestHandler.TAG_VOLLEY_REQUEST);
         finish();
     }
 
