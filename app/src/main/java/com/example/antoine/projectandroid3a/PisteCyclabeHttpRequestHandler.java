@@ -55,18 +55,18 @@ public class PisteCyclabeHttpRequestHandler {
 
                         try {
 
-                            JSONArray jsonArray = response.getJSONArray("records");
+                            JSONArray jsonArray = response.getJSONArray("records"); // recuperation des infos utiles apres la requete
 
                             Gson gson = new GsonBuilder().create();
 
-                            for(int i = 0; i < jsonArray.length(); ++i){
+                            for(int i = 0; i < jsonArray.length(); ++i){ // parcours des records
 
                                 JSONObject record = jsonArray.getJSONObject(i);
-                                String fields = record.getString("fields");
+                                String fields = record.getString("fields"); // recuperation des elements de records
 
-                                PisteReseauCyclable data = gson.fromJson(fields, PisteReseauCyclable.class);
+                                PisteReseauCyclable data = gson.fromJson(fields, PisteReseauCyclable.class); // json to PisteReseauCyclable
 
-                                getDataList().add(data);
+                                getDataList().add(data); // ajout des données dans notre liste
 
                             }
 
@@ -86,21 +86,17 @@ public class PisteCyclabeHttpRequestHandler {
                     public void onErrorResponse(VolleyError error) {
                         // TODO Auto-generated method stub
 
-                        //Log.d("DEB", "no Http response");
-                        activity.httpRequestReceived(false, false);
+                        activity.httpRequestReceived(false, false); // requete trop longue ou qui n'a pas abouti
 
                     }
                 });
 
-        // Add the request to the RequestQueue.
 
-        jsObjRequest.setTag(PisteCyclabeHttpRequestHandler.TAG_VOLLEY_REQUEST);
-
-        jsObjRequest.setRetryPolicy(new DefaultRetryPolicy(PisteCyclabeHttpRequestHandler.REQUEST_TIMEOUT
-                                                            , PisteCyclabeHttpRequestHandler.REQUEST_NB_RETRY
-                                                            , PisteCyclabeHttpRequestHandler.REQUEST_BACK_OFF_MULTIPLIER));
-
-        requestQueue.add(jsObjRequest);
+        jsObjRequest.setTag(PisteCyclabeHttpRequestHandler.TAG_VOLLEY_REQUEST); // ajout d'un tag pour annulation eventuelle
+        jsObjRequest.setRetryPolicy(new DefaultRetryPolicy(PisteCyclabeHttpRequestHandler.REQUEST_TIMEOUT // temps avant lancement nouvelle requete
+                                                            , PisteCyclabeHttpRequestHandler.REQUEST_NB_RETRY // combien de retry
+                                                            , PisteCyclabeHttpRequestHandler.REQUEST_BACK_OFF_MULTIPLIER)); // back off multiplier
+        requestQueue.add(jsObjRequest); // lancer de la requete
     }
 
 
