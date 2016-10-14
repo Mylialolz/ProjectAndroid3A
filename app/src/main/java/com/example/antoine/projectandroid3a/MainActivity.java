@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
     public static final int PERMISSION_REQUEST_INTERNET = 2;
     public static final int TAB_MAP = 1;
     public static final int TAB_LISTE = 0;
-    public static String TYPE_MAP = "NORMAL";
+    private static String TYPE_MAP = "NORMAL";
 
 
     private String mRequeteHTTP;
@@ -92,6 +92,8 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
         askForPermissions();
 
     }
+
+    public static String getMapType(){return TYPE_MAP;}
 
     private void setTabLayout() {
         tabLayout = (TabLayout)findViewById(R.id.tabLayout);
@@ -407,11 +409,11 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
         switch (id) {
             case R.id.map_typeMap:
                 TYPE_MAP = "NORMAL";
-                tabLayout.getTabAt(TAB_LISTE).select();
+                if(currentTab == TAB_MAP){this.createMapFragment();}
                 return true;
             case R.id.map_typeEarth:
                 TYPE_MAP = "SATELLITE";
-                tabLayout.getTabAt(TAB_LISTE).select();
+                if(currentTab == TAB_MAP){this.createMapFragment();}
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
