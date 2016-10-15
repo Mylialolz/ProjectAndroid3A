@@ -5,6 +5,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 /**
  * Created by Antoine on 25/09/2016.
+ * MapLineDrawer sert à dessiner une ligne sur une googleMap
  */
 
 public class MapLineDrawer {
@@ -13,6 +14,13 @@ public class MapLineDrawer {
     public MapLineDrawer(){}
 
 
+    /**
+     *
+     * @param geoPoints coordonnées de la ligne
+     * @param width épaisseur (largeur) de la ligne
+     * @param color couleur de la ligne
+     * @return PolylineOptions ligne
+     */
     public static PolylineOptions drawLineBetweenGeoPoints(double[][] geoPoints, float width, int color){
 
         PolylineOptions line = new PolylineOptions();

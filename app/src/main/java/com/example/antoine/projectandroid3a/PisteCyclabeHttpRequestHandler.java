@@ -23,31 +23,42 @@ import java.util.List;
 public class PisteCyclabeHttpRequestHandler {
 
 
-    public static final String TAG_VOLLEY_REQUEST = "TAG_VOLLEY_REQUEST";
+    public static final String TAG_VOLLEY_REQUEST = "TAG_VOLLEY_REQUEST"; // tag pour annuler si besoin les requetes
 
-    private String HttpRequest;
-    private List<PisteReseauCyclable> mDataList;
-    private boolean firstRequest;
+    private String HttpRequest; // texte de la requete
+    private List<PisteReseauCyclable> mDataList; // liste de donnees recuperees apres la requete
+    private boolean firstRequest; // boolean pour savoir si la liste de donnees a besoin d'etre effacee avant d'etre actualisee
 
     private static final int REQUEST_BACK_OFF_MULTIPLIER = 1;
     private static final int REQUEST_TIMEOUT = 7000;
     private static final int REQUEST_NB_RETRY = 1;
 
+    /**
+     * Constructeur de la classe qui s'occupe de lancer les requetes http grace a la libraire volley
+     * @param HttpRequest
+     */
+
     public PisteCyclabeHttpRequestHandler(String HttpRequest){
 
+        // initialisation des donnees membres
         this.setHttpRequest(HttpRequest);
         this.firstRequest = true;
         this.mDataList = new ArrayList<>();
 
     }
 
+    /**
+     *
+     * @param requestQueue
+     * @param activity MainActivity, activity depuis laquelle la requete sera lancee
+     */
     public void launchHttpRequest(RequestQueue requestQueue, final MainActivity activity){
 
         if(isFirstRequest() == false){
-            mDataList.clear();
+            mDataList.clear(); // mise a jour de la liste si nouvelle requete effectuee
         }
 
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest // fonction appelee lorsque la requete envoyee est recue
                 (Request.Method.GET, getHttpRequest(), null, new Response.Listener<JSONObject>() {
 
                     @Override
@@ -61,26 +72,26 @@ public class PisteCyclabeHttpRequestHandler {
 
                             for(int i = 0; i < jsonArray.length(); ++i){ // parcours des records
 
-                                JSONObject record = jsonArray.getJSONObject(i);
-                                String fields = record.getString("fields"); // recuperation des elements de records
+                                JSONObject record = jsonArray.getJSONObject(i); // recuperation d'un tableau parmi tous les recordes
+                                String fields = record.getString("fields"); // recuperation des elements tu tableau
 
                                 PisteReseauCyclable data = gson.fromJson(fields, PisteReseauCyclable.class); // json to PisteReseauCyclable
 
-                                getDataList().add(data); // ajout des données dans notre liste
+                                getDataList().add(data); // ajout de PisteReseauCyclable dans notre liste
 
                             }
 
                             if(getDataList().size() > 0)
-                                activity.httpRequestReceived(true, false);
+                                activity.httpRequestReceived(true, false); // la requete a abouti et contient des donnees
                             else
-                                activity.httpRequestReceived(true, true);
+                                activity.httpRequestReceived(true, true); // la requete a abouti mais ne contient aucune donnee
 
                         }
                         catch (JSONException e){
                             e.printStackTrace();
                         }
                     }
-                }, new Response.ErrorListener() {
+                }, new Response.ErrorListener() { // gestion des erreurs
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
@@ -96,7 +107,7 @@ public class PisteCyclabeHttpRequestHandler {
         jsObjRequest.setRetryPolicy(new DefaultRetryPolicy(PisteCyclabeHttpRequestHandler.REQUEST_TIMEOUT // temps avant lancement nouvelle requete
                                                             , PisteCyclabeHttpRequestHandler.REQUEST_NB_RETRY // combien de retry
                                                             , PisteCyclabeHttpRequestHandler.REQUEST_BACK_OFF_MULTIPLIER)); // back off multiplier
-        requestQueue.add(jsObjRequest); // lancer de la requete
+        requestQueue.add(jsObjRequest); // lancement de la requete
     }
 
 

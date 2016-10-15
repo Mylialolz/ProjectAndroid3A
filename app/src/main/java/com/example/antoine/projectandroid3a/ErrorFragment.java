@@ -15,30 +15,28 @@ import android.widget.TextView;
  */
 public class ErrorFragment extends Fragment {
 
-    private ErrorInterface listener;
+    private ErrorInterface listener; // tunnel de communication entre l'activity et le fragment. Permet de recuperer le message d'erreur
 
     public ErrorFragment() {
-        // Required empty public constructor
     }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
         View rootView = inflater.inflate(R.layout.fragment_permission_error, container, false);
 
-        String msg = listener.getErrorMsg();
-
+        String msg = listener.getErrorMsg(); // recuperation du message d'erreur
         TextView txt = (TextView)rootView.findViewById(R.id.permTxtError);
-        txt.setText(msg);
+        txt.setText(msg); // affichage du message d'erreur
 
         return rootView;
     }
 
 
     @Override
-    public void onAttach(Context context){
+    public void onAttach(Context context){ // creation du tunnel de communication
         super.onAttach(context);
         listener = (ErrorInterface) context;
     }
