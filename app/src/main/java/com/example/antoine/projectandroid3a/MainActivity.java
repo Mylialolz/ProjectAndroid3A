@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
     private FloatingActionButton mFab;
 
     private List<PisteReseauCyclable> mList;
-    private boolean emptyResultFromHttpRequest;
+    //private boolean emptyResultFromHttpRequest;
 
     private String mMsgError ="";
 
@@ -70,38 +70,55 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
         setContentView(R.layout.activity_main);
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        if(getSupportActionBar() != null){
+        if(getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
         UserInput searchParameter = (UserInput)getIntent().getSerializableExtra(LaunchActivity.REQUEST);
+        initMemberVariables(searchParameter);
+
+        setFloatingActionButton();
+        askForPermissions();
+
+    }
+
+    private void initMemberVariables(UserInput searchParameter) {
         mRequeteHTTP = searchParameter.constructRequest();
+        tabLayout = (TabLayout)findViewById(R.id.tabLayout);
         mList = new ArrayList<>();
         mFavorites = new SharedPreference();
         permissionMap = false;
-        emptyResultFromHttpRequest = true;
+        //emptyResultFromHttpRequest = true;
         permissionInternet = false;
         mRequestQueue = Volley.newRequestQueue(this);
         httpRequestHandler = new PisteCyclabeHttpRequestHandler(mRequeteHTTP);
         affichageFavoris = true;
-
-        setFloatingActionButton();
-        setTabLayout();
-        askForPermissions();
-
     }
 
     public static String getMapType(){return TYPE_MAP;}
 
     private void setTabLayout() {
-        tabLayout = (TabLayout)findViewById(R.id.tabLayout);
-        for(String str : tabs) {
-            tabLayout.addTab(tabLayout.newTab().setText(str));
+        if(tabLayout.getTabCount() == 0) {
+            for (String str : tabs) {
+                tabLayout.addTab(tabLayout.newTab().setText(str));
+            }
         }
         tabLayout.addOnTabSelectedListener(this);
     }
+
+    private void hideTabLayout(){
+
+        int size = tabLayout.getTabCount();
+        if(size > 0) {
+            tabLayout.removeAllTabs();
+        }
+
+    }
+
+
 
     private void setFloatingActionButton() {
         mFab = (FloatingActionButton) findViewById(R.id.floatingActionButton);
@@ -109,13 +126,13 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 if(affichageFavoris) {
                     affichageFavoris = false;
                     mFab.setImageResource(R.drawable.done_white);
                     createLoadingFragment();
                     Snackbar.make(view, "Affichage de vos pistes favorites !", Snackbar.LENGTH_LONG).show();
                     ArrayList<PisteReseauCyclable> list = mFavorites.getFavorites(getApplicationContext());
+                    setTabLayout();
                     mList = list;
                     if(mList.size() > 0)
                         createListFragment();
@@ -133,10 +150,8 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
                     if(mList.size() > 0)
                         createListFragment();
                     else {
-                        setErrorMsg(getString(R.string.ERREUR_NO_DATA));
-                        createErrorFragment();
+                        sendHttpRequest();
                     }
-
                 }
             }
         });
@@ -204,10 +219,10 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
             case 0 :
                 currentTab = TAB_LISTE;
                 mFab.show();
-                if(emptyResultFromHttpRequest == false && permissionInternet == true)
+                if(!mList.isEmpty() && permissionInternet == true)
                     this.createListFragment();
                 else {
-                    if(permissionInternet == false || emptyResultFromHttpRequest == true) {
+                    if(permissionInternet == false || mList.isEmpty()) {
                         setErrorMsg(getString(R.string.ERREUR_NO_DATA));
                         this.createErrorFragment();
                     }
@@ -216,10 +231,10 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
             case 1 :
                 currentTab = TAB_MAP;
                 mFab.hide();
-                if(emptyResultFromHttpRequest == false && permissionMap == true)
+                if(!mList.isEmpty() && permissionMap == true)
                     this.createMapFragment();
                 else {
-                    if(permissionMap == false || emptyResultFromHttpRequest == true) {
+                    if(permissionMap == false ||  !mList.isEmpty()) {
                         setErrorMsg(getString(R.string.ERREUR_NO_DATA));
                         this.createErrorFragment();
                     }
@@ -231,12 +246,12 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
 
     @Override
     public void onTabUnselected(TabLayout.Tab tab) {
-
+        return;
     }
 
     @Override
     public void onTabReselected(TabLayout.Tab tab) {
-
+        return;
     }
 
     @Override
@@ -244,7 +259,6 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
                                            String permissions[], int[] grantResults) {
         switch (requestCode) {
             case PERMISSION_REQUEST_INTERNET: {
-                // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     permissionInternet = true;
@@ -255,7 +269,6 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
                 return;
             }
             case PERMISSION_REQUEST_MAP: {
-                // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                         permissionMap = true;
@@ -284,49 +297,52 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
         }
         else {
             Toast.makeText(getApplicationContext()
-                            , "Impossible de se connecter au serveur."
-                            , Toast.LENGTH_LONG).show();
+                                    , "Impossible de se connecter au serveur."
+                                    , Toast.LENGTH_LONG).show();
+            setErrorMsg(getString(R.string.ERREUR_PERMISSION_INTERNET));
+            createErrorFragment();
         }
 
     }
 
 
-    public void httpRequestReceived(boolean requestReceived, boolean emptyResult){
-
-        emptyResultFromHttpRequest = emptyResult;
+    public void httpRequestReceived(boolean requestReceived){
 
         if(requestReceived){
-            if(emptyResultFromHttpRequest == false) {
-                mList = httpRequestHandler.getDataList();
+            mList = httpRequestHandler.getDataList();
+            if(!mList.isEmpty()) {
                 this.createListFragment();
             }
             else {
                 setErrorMsg(getString(R.string.ERREUR_NO_DATA));
                 this.createErrorFragment();
             }
+            setTabLayout();
         }
         else {
-            Toast.makeText(getApplicationContext(), "Erreur de réseau.", Toast.LENGTH_LONG).show();
+            hideTabLayout();
+            Toast.makeText(getApplicationContext()
+                                    , "Erreur de réseau."
+                                    , Toast.LENGTH_LONG).show();
             this.createNetworkErrorFragment();
         }
 
-
+        return;
     }
 
     private void createLoadingFragment(){
-
         this.manageFragment(new LoadingFragment());
-
     }
 
 
     private void createListFragment(){
-
         ListeFragment list = new ListeFragment();
+
         Bundle bundle = new Bundle();
         bundle.putString(MainActivity.PERMISSION_MAP, Integer.toString(permissionMap == true ? 1 : 0));
         bundle.putString(MainActivity.PRINTING_FAVORITES, Integer.toString(affichageFavoris == true ? 1 : 0));
         list.setArguments(bundle);
+
         this.manageFragment(list);
     }
 
@@ -355,13 +371,13 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
                 if (mList.size() > 0)
                     createListFragment();
                 else {
-                    setErrorMsg(getString(R.string.ERREUR_NO_DATA));
-                    createErrorFragment();
+                    sendHttpRequest();
                 }
             }
-            else
+            else {
                 mRequestQueue.cancelAll(PisteCyclabeHttpRequestHandler.TAG_VOLLEY_REQUEST);
                 finish();
+            }
                 break;
             case TAB_MAP :
                 tabLayout.getTabAt(TAB_LISTE).select();
@@ -431,7 +447,6 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
         return mList;
     }
 
-
     @Override
     public void tryHttpRequestAfterFail() {
         this.sendHttpRequest();
@@ -442,7 +457,6 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
         mRequestQueue.cancelAll(PisteCyclabeHttpRequestHandler.TAG_VOLLEY_REQUEST);
         finish();
     }
-
 
     public void setErrorMsg(String m){
         this.mMsgError = m;

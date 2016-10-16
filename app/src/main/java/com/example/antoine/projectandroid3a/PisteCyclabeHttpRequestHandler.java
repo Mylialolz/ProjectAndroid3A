@@ -81,10 +81,12 @@ public class PisteCyclabeHttpRequestHandler {
 
                             }
 
-                            if(getDataList().size() > 0)
+                           /* if(getDataList().size() > 0)
                                 activity.httpRequestReceived(true, false); // la requete a abouti et contient des donnees
                             else
-                                activity.httpRequestReceived(true, true); // la requete a abouti mais ne contient aucune donnee
+                                activity.httpRequestReceived(true, true); // la requete a abouti mais ne contient aucune donnee*/
+
+                            activity.httpRequestReceived(true);
 
                         }
                         catch (JSONException e){
@@ -97,7 +99,7 @@ public class PisteCyclabeHttpRequestHandler {
                     public void onErrorResponse(VolleyError error) {
                         // TODO Auto-generated method stub
 
-                        activity.httpRequestReceived(false, false); // requete trop longue ou qui n'a pas abouti
+                        activity.httpRequestReceived(false); // requete trop longue ou qui n'a pas abouti
 
                     }
                 });
