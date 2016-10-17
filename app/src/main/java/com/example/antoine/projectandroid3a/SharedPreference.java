@@ -12,6 +12,7 @@ import java.util.List;
 
 /**
  * Created by antoine on 29/09/2016.
+ * Gère l'ajout et la suppression des Favoris*/
  */
 
 public class SharedPreference {

@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 /**
  * Created by Antoine on 26/09/2016.
+ * Stocke et met en forme les paramètres de recherche entrés par l'utilisateur
+ * Construit la requête HTTP associée
  */
 
 public class UserInput implements Serializable{

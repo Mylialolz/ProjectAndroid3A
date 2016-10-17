@@ -4,6 +4,7 @@ import java.util.List;
 
 /**
  * Created by Antoine on 17/10/2016.
+ * Filtre les résultats pour n'afficher qu'un marqueur pour chaque rue comportant une ou plusieurs pistes cyclables
  */
 
 public class SearchInList {

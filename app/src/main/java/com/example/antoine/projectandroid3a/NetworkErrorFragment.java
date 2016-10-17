@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-
+/*Gère les erreurs de réseau*/
 public class NetworkErrorFragment extends Fragment {
 
     private TryHttpRequestAgain listener; // permet de communiquer avec la "MainActivity"

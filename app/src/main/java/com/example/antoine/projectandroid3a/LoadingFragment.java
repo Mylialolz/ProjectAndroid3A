@@ -12,6 +12,7 @@ import android.widget.ProgressBar;
 
 /**
  * A simple {@link Fragment} subclass.
+ * Crée une roue de chargement
  */
 public class LoadingFragment extends Fragment {
 

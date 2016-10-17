@@ -12,6 +12,7 @@ import java.util.List;
 
 /**
  * Created by Antoine on 23/09/2016.
+ * Met en place les données de la piste dans les items de la ListView
  */
 
 public class ListeAdapter extends ArrayAdapter<ListeData>  {
