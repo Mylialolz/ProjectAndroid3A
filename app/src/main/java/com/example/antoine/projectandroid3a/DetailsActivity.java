@@ -170,6 +170,11 @@ public class DetailsActivity extends AppCompatActivity implements DataFromHttpRe
         return list;
     }
 
+    @Override
+    public void sendHttpRequestFromFragment() {
+        return;
+    }
+
 
     @Override
     public String getErrorMsg() {

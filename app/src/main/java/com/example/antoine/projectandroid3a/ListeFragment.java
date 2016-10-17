@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class ListeFragment extends Fragment {
+public class ListeFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
 
     private DataFromHttpRequest tunnel;
@@ -28,7 +29,6 @@ public class ListeFragment extends Fragment {
     private int mMapPermissionGranted;
     private boolean mFavorisAffiches;
     private SharedPreference favoris;
-
 
     public ListeFragment() {
         // Required empty public constructor
@@ -50,9 +50,6 @@ public class ListeFragment extends Fragment {
         mFavorisAffiches = Integer.valueOf(this.getArguments().getString(MainActivity.PRINTING_FAVORITES)) == 1 ? true : false;
         dataList = tunnel.getDataList(); // recuperation de la reference sur la liste des donnees apres la requete http
 
-        tunnel.sendHttpRequestFromFragment();
-
-
         List<ListeData> list = new ArrayList<>();
         for(int i = 0; i < dataList.size(); ++i){
 
@@ -64,6 +61,9 @@ public class ListeFragment extends Fragment {
 
         mAdapter = new ListeAdapter(getActivity(), list); // affichage de la liste
         mListView.setAdapter(mAdapter);
+
+        SwipeRefreshLayout swipe = (SwipeRefreshLayout)rootView.findViewById(R.id.swiperefresh);
+        swipe.setOnRefreshListener(ListeFragment.this);
 
         // Inflate the layout for this fragment
         return rootView;
@@ -146,5 +146,10 @@ public class ListeFragment extends Fragment {
 
         return gson.toJson(data);
 
+    }
+
+    @Override
+    public void onRefresh() {
+        tunnel.sendHttpRequestFromFragment();
     }
 }

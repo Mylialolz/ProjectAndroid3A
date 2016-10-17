@@ -10,7 +10,7 @@ public class UserInput implements Serializable{
 
     private String keyword;
     private int zipCode;
-    private static final String requestFirstPart = "http://opendata.paris.fr/api/records/1.0/search/?dataset=reseau-cyclable&rows=30&q=";
+    private static final String requestFirstPart = "http://opendata.paris.fr/api/records/1.0/search/?dataset=reseau-cyclable&rows=3500&q=";
     private static final String requestLastPart = "&facet=arrdt&facet=statut&facet=typologie&facet=sens_velo&refine.arrdt=";
 
     public int getArr(){

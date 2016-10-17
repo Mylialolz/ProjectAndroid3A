@@ -3,7 +3,6 @@ package com.example.antoine.projectandroid3a;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -21,6 +20,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -33,6 +33,8 @@ public class CustomMapFragment extends Fragment {
 
     private List<PisteReseauCyclable> mDataList; // donnees a maper
 
+    private List<String> mNomVoieAffichee;
+
     private int mItemToFocusOn; // index de l'item sur lequel on doit centrer la map par defaut à l'initialisation
     private LatLng markerToFocusOn;
 
@@ -40,7 +42,7 @@ public class CustomMapFragment extends Fragment {
     private GoogleMap googleMap;
 
     private ProgressBar progressBar; // progress bar
-    private int mProgressStatus = 0; // valeur de la progress bar
+    private int mProgressStatus; // valeur de la progress bar
 
     public CustomMapFragment() {
         // Required empty public constructor
@@ -55,6 +57,8 @@ public class CustomMapFragment extends Fragment {
         mItemToFocusOn = Integer.valueOf(this.getArguments().getString(MainActivity.ITEM_TO_FOCUS_ON)); // recuperation de l'index de l'item sur lequel on doit centrer la map par defaut à l'initialisation
         mDataList = tunnel.getDataList(); // recuperation des donnees a maper
 
+
+        mNomVoieAffichee = new ArrayList<>();
         double[] tempInit = mDataList.get(mItemToFocusOn).getGeo_point_2d(); // recuperation des coordonnes du marker sur lequel la map sera centree par defaut
         markerToFocusOn = new LatLng(tempInit[0], tempInit[1]); // affectation des coordonnes a la variable memebre
 
@@ -62,11 +66,12 @@ public class CustomMapFragment extends Fragment {
         mMapView.onCreate(savedInstanceState); // creation de la map view
 
         // configuration de la progressbar pour indiquer le niveau chargement à l'utilisateur
+        mProgressStatus = 0;
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBarMapFragment);
-        progressBar.setIndeterminate(true);
+        progressBar.setVisibility(View.VISIBLE);
+        progressBar.setIndeterminate(false);
         progressBar.setProgress(0);
         progressBar.setMax(mDataList.size());
-        new MyTask().execute(mDataList.size()); // ne fonctionne pas
 
         try {
             MapsInitializer.initialize(getActivity().getApplicationContext());
@@ -92,9 +97,13 @@ public class CustomMapFragment extends Fragment {
                     PisteReseauCyclable data = mDataList.get(i); // recuperation de la ieme piste cyclable
                     LatLng latCourante = new LatLng(data.getGeo_point_2d()[0], data.getGeo_point_2d()[1]); // recuperation coordonnes marker
 
-                    googleMap.addMarker(new MarkerOptions().position(latCourante) // ajout du marker correspond à la piste cyclable i
-                                                .title(data.getCompleteStreetNameWithArdt())
-                                                    .snippet(data.getSens_velo()));
+                    if(!SearchInList.contains(mNomVoieAffichee, data.getNom_voie())){
+                        googleMap.addMarker(new MarkerOptions().position(latCourante) // ajout du marker correspond à la piste cyclable i
+                                .title(data.getCompleteStreetNameWithArdt())
+                                .snippet(data.getSens_velo()));
+
+                        mNomVoieAffichee.add(data.getNom_voie());
+                    }
 
                     PolylineOptions line = MapLineDrawer.drawLineBetweenGeoPoints(data.getGeo_shape().getCoordinates() // configuration de la piste cyclable
                                                                                     , 4                                 // epaisseur de la piste cyclable
@@ -102,7 +111,7 @@ public class CustomMapFragment extends Fragment {
 
                     googleMap.addPolyline(line); // dessin de la piste cyclable sur la map
 
-                    mProgressStatus++;
+                    progressBar.incrementProgressBy(1); // ne fonctionne pas
                 }
 
                 progressBar.setVisibility(View.GONE); // disparition de la progress bar
@@ -116,58 +125,6 @@ public class CustomMapFragment extends Fragment {
 
         return rootView;
     }
-
-    class MyTask extends AsyncTask<Integer, Integer, String> {  // ne fonctionne pas
-        @Override
-        protected String doInBackground(Integer... params) {
-            while(mProgressStatus < params[0]) {
-                try {
-                    Thread.sleep(50);
-
-                    publishProgress(mProgressStatus);
-                    //progressBar.setProgress(mProgressStatus);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            return "Task Completed.";
-        }
-        @Override
-        protected void onPostExecute(String result) {
-            progressBar.setVisibility(View.GONE);
-        }
-        @Override
-        protected void onPreExecute() {
-            progressBar.setVisibility(View.VISIBLE);
-        }
-        @Override
-        protected void onProgressUpdate(Integer... values) {
-            progressBar.setProgress(0);
-            progressBar.setMax(mDataList.size());
-            progressBar.setProgress(values[0]);
-        }
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     @Override
