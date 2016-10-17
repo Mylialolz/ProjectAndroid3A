@@ -11,5 +11,13 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
+    <style name="EditTextLaunchActivityStyleV21">
+        <item name="colorPrimary">@color/launchColor</item>
+        <item name="colorAccent">@color/launchColor</item>
+        <item name="android:colorActivatedHighlight">@color/launchColor</item>
+        <item name="android:colorControlActivated">@color/launchColor</item>
+        <item name="android:colorControlNormal">@color/launchColor</item>
+    </style>
+
 
 </resources>

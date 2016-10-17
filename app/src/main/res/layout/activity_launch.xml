@@ -5,72 +5,72 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background0"
     tools:context="com.example.antoine.projectandroid3a.LaunchActivity">
 
-    <EditText
+    <android.support.v7.widget.AppCompatEditText
         android:layout_width="0dp"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
         android:inputType="text"
         android:ems="10"
         android:id="@+id/keyword"
         android:textAlignment="center"
-        android:hint="Sur quelle voie ..."
+        android:hint="Saisir la voie"
         android:textColorLink="@color/colorPrimary"
-        android:textColorHint="@android:color/background_dark"
+        android:textColorHint="@color/hintEditTextLaunchActivity"
         android:textColor="@android:color/background_dark"
-        android:background="#40357AB7"
         android:textColorHighlight="@android:color/transparent"
-        android:layout_marginTop="40dp"
-        app:layout_constraintTop_toBottomOf="@+id/imageView"
-        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintVertical_bias="0.0" />
+        android:layout_marginStart="8dp"
+        app:layout_constraintLeft_toRightOf="@+id/ic_iv_bike"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        app:theme="@style/EditTextLaunchActivityStyle"
+        />
 
     <Button
-        android:text="GO"
+        android:text="Rechercher"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:id="@+id/buttonGo"
         android:background="#40357AB7"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="8dp"
-        android:layout_marginStart="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginLeft="8dp"
-        android:layout_marginEnd="8dp"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginRight="8dp"
-        app:layout_constraintHorizontal_bias="0.93" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/imageView"
+        android:layout_marginTop="16dp"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintVertical_bias="1.0"
+        android:layout_marginBottom="16dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginRight="50dp" />
 
-    <EditText
+    <android.support.v7.widget.AppCompatEditText
         android:layout_width="0dp"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
         android:ems="10"
         android:id="@+id/zipInput"
-        android:hint="et l'arrondissement ?"
-        android:textColorHint="@android:color/background_dark"
+        android:hint="Saisir l'arrondissement"
+        android:textColorHint="@color/hintEditTextLaunchActivity"
         android:inputType="number"
         android:textAlignment="center"
         android:textColor="@android:color/background_dark"
-        android:background="#40357AB7"
-        app:layout_constraintBottom_toTopOf="@+id/buttonGo"
-        android:layout_marginBottom="48dp"
-        android:layout_marginStart="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintTop_toBottomOf="@+id/keyword"
-        app:layout_constraintVertical_bias="0.13"
-        app:layout_constraintHorizontal_bias="0.37" />
+        app:layout_constraintBottom_toTopOf="@+id/buttonGo"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintLeft_toRightOf="@+id/ic_iv_marker"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintVertical_bias="0.52"
+        app:theme="@style/EditTextLaunchActivityStyle" />
 
     <ImageView
         android:id="@+id/imageView"
@@ -80,11 +80,39 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:background="@drawable/background1" />
-    <View
-        android:layout_width="wrap_content"
-        android:layout_height="14dp"
-        android:background="@android:color/black"
+        android:background="@drawable/animated_bike" />
+
+    <ImageView
+        app:srcCompat="@drawable/bike_ic_launch"
+        android:id="@+id/ic_iv_bike"
+        android:tint="@color/launchColor"
+        android:layout_marginTop="24dp"
         app:layout_constraintTop_toBottomOf="@+id/imageView"
-        app:layout_constraintRight_toRightOf="parent" />
+        android:layout_marginStart="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="304dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginRight="304dp"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        app:layout_constraintHorizontal_bias="0.06" />
+
+    <ImageView
+        app:srcCompat="@drawable/location_ic_launch"
+        android:tint="@color/launchColor"
+        android:layout_height="25dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/ic_iv_bike"
+        app:layout_constraintBottom_toTopOf="@+id/buttonGo"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="304dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginRight="304dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="16dp"
+        app:layout_constraintHorizontal_bias="0.06"
+        android:layout_width="25dp"
+        android:id="@+id/ic_iv_marker" />
 </android.support.constraint.ConstraintLayout>

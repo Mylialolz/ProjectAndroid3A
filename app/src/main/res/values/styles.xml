@@ -27,4 +27,12 @@
         <item name="colorControlNormal">@color/white</item>
     </style>
 
+
+    <style name="EditTextLaunchActivityStyle">
+        <item name="colorPrimary">@color/launchColor</item>
+        <item name="colorAccent">@color/launchColor</item>
+        <item name="android:colorActivatedHighlight">@color/launchColor</item>
+        <item name="android:colorControlActivated">@color/launchColor</item>
+    </style>
+
 </resources>

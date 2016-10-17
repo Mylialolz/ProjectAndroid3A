@@ -7,4 +7,6 @@
     <color name="white">#FFFFFF</color>
     <color name="windowBackground">#FFFFFF</color>
     <color name="navigationBarColor">#000000</color>
+    <color name="launchColor">#26b8fc</color>
+    <color name="hintEditTextLaunchActivity">#9CA1A4</color>
 </resources>
