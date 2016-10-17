@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+/*Première Activity définissant le formulaire de recherche*/
 public class LaunchActivity extends AppCompatActivity {
 
     public final static String REQUEST = "Editing";
@@ -23,6 +24,7 @@ public class LaunchActivity extends AppCompatActivity {
         /*Création d'un bouton de recherche et implémentation d'un listener*/
         final Button button = (Button) findViewById(R.id.buttonGo);
         button.setOnClickListener(new View.OnClickListener() {
+            /*Récupère les paramètres entrés par le User et les stocks dans un objet*/
             public void onClick(View v) {
                 EditText inputZip = (EditText) findViewById(R.id.zipInput);
                 EditText inputKeyword = (EditText) findViewById(R.id.keyword);
