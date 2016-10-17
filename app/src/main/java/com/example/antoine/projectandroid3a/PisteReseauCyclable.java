@@ -37,9 +37,6 @@ public class PisteReseauCyclable {
     @SerializedName("arrdt")
     private int arrdt;
 
-    @SerializedName("statut")
-    private String statut;
-
     @SerializedName("sens_velo")
     private String sens_velo;
 
@@ -51,9 +48,6 @@ public class PisteReseauCyclable {
 
     @SerializedName("typologie_simple")
     private String typologie_simple;
-
-    @SerializedName("shape_len")
-    private String shape_len;
 
     @SerializedName("geo_shape")
     private LigneReseauCyclable geo_shape;
@@ -94,16 +88,6 @@ public class PisteReseauCyclable {
             return -1;
 
         return arrdt;
-    }
-
-    public String getStatut() {
-
-        if(statut == null)
-            return "Inconnu";
-
-        if(statut.matches(""))
-            return "Inconnu";
-        return statut;
     }
 
     public String getSens_velo() {
@@ -147,13 +131,6 @@ public class PisteReseauCyclable {
         return typologie_simple;
     }
 
-    public String getShape_len() {
-        if(shape_len == null)
-            return "Inconnu";
-        if(shape_len.matches(""))
-            return "Inconnu";
-        return shape_len;
-    }
 
     public LigneReseauCyclable getGeo_shape() {
         return geo_shape;
@@ -184,22 +161,5 @@ public class PisteReseauCyclable {
 
 
     }
-
-
-    public String getDetailedInformationsOnNetworkInHtlmFormat(){
-
-        String lineSep = System.getProperty("line.separator");
-
-        String intro = "<p>Quelques informations complémentaires sur la piste cyclable : </p>" + lineSep;
-
-        String localisation = "<u> Localisation :</u> " + this.getCompleteStreetNameWithArdt() + "." + lineSep;
-        String bois = "<u> Zone boisée  :</u> " + this.getBois().toLowerCase() + "." + lineSep;
-        String typePiste = "<u> Type de piste :</u> " + this.getTypologie().toLowerCase() + "." + lineSep;
-        String sensCirculation = "<u> Sens de circulation :</u> " + this.getSens_velo().toLowerCase() + ".";
-
-        return intro + localisation + bois + typePiste + sensCirculation;
-
-    }
-
 
 }

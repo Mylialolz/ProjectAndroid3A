@@ -104,7 +104,7 @@ public class CustomMapFragment extends Fragment {
                     if(!SearchInList.contains(mNomVoieAffichee, data.getNom_voie())){
                         googleMap.addMarker(new MarkerOptions().position(latCourante) // ajout du marker correspond à la piste cyclable i
                                 .title(data.getCompleteStreetNameWithArdt())
-                                .snippet(data.getSens_velo()));
+                                .snippet(data.getTypologie_simple()));
 
                         mNomVoieAffichee.add(data.getNom_voie());
                     }
