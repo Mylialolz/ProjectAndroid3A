@@ -17,7 +17,7 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/*Fragment qui gère l'affichage de la ListView contenant les données reçues*/
 public class ListeFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
 
