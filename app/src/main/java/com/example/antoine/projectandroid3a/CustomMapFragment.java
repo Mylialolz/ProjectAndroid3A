@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -42,7 +43,7 @@ public class CustomMapFragment extends Fragment {
     private GoogleMap googleMap;
 
     private ProgressBar progressBar; // progress bar
-    private int mProgressStatus; // valeur de la progress bar
+    private TextView messageChargement;
 
     public CustomMapFragment() {
         // Required empty public constructor
@@ -63,10 +64,13 @@ public class CustomMapFragment extends Fragment {
         markerToFocusOn = new LatLng(tempInit[0], tempInit[1]); // affectation des coordonnes a la variable memebre
 
         mMapView = (MapView) rootView.findViewById(R.id.mapView);
+
         mMapView.onCreate(savedInstanceState); // creation de la map view
 
         // configuration de la progressbar pour indiquer le niveau chargement à l'utilisateur
-        mProgressStatus = 0;
+        messageChargement = (TextView)rootView.findViewById(R.id.messageMapChargement);
+        messageChargement.setText("La carte est cours de chargement...");
+
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBarMapFragment);
         progressBar.setVisibility(View.VISIBLE);
         progressBar.setIndeterminate(false);
@@ -114,6 +118,7 @@ public class CustomMapFragment extends Fragment {
                     progressBar.incrementProgressBy(1); // ne fonctionne pas
                 }
 
+                messageChargement.setText("");
                 progressBar.setVisibility(View.GONE); // disparition de la progress bar
                 mMapView.onResume(); // affichage de la map
 
