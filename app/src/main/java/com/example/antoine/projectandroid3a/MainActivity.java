@@ -27,6 +27,7 @@ import com.android.volley.toolbox.Volley;
 import java.util.ArrayList;
 import java.util.List;
 
+/*Activity qui s'occupe de l'envoi de la requête, de la récupération de données et de leur mise en forme --> Activity principale de l'application*/
 public class MainActivity extends AppCompatActivity implements DataFromHttpRequest, TryHttpRequestAgain,TabLayout.OnTabSelectedListener, ErrorInterface {
 
     public static final String EXTRA_MESSAGE = "ID_ITEM";
@@ -84,7 +85,8 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
         askForPermissions();
 
     }
-
+    
+    /*Prépare la requête HTTP en fonction des paramètres entrés par le User*/
     private void initMemberVariables(UserInput searchParameter) {
         mRequeteHTTP = searchParameter.constructRequest();
         tabLayout = (TabLayout)findViewById(R.id.tabLayout);
@@ -119,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
     }
 
 
-
+    /*Gère l'affichage des favoris par appui sur le bouton flottant*/
     private void setFloatingActionButton() {
         mFab = (FloatingActionButton) findViewById(R.id.floatingActionButton);
         mFab.setImageResource(R.drawable.favorite_white);
@@ -157,6 +159,7 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
         });
     }
 
+    /*Demande à l'OS si on peut accéder à Internet et à la localisation*/
     private void askForPermissions() {
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                                                                     != PackageManager.PERMISSION_GRANTED) {
@@ -194,6 +197,7 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
         alert.show();
     }
 
+    /*Demande la permission d'utiliser la Map*/
     private void askMapPermission() {
         AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
         alertBuilder.setTitle("Permission affichage carte.");
@@ -211,6 +215,7 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
         alert.show();
     }
 
+    /*Gère le passage d'un fragment (ici les tabs Map et Liste) à un autre*/
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
 
@@ -254,6 +259,7 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
         return;
     }
 
+    /* Récupère et stocke les demandes de permissions dans des variables*/
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
@@ -287,7 +293,7 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
     }
 
 
-
+    /*Envoi de la requête HTTP à l'API*/
     private void sendHttpRequest(){
 
         if(permissionInternet == true) {
@@ -305,7 +311,7 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
 
     }
 
-
+    /*Récupère et stocke les données issues de la requête*/
     public void httpRequestReceived(boolean requestReceived){
 
         if(requestReceived){
@@ -330,11 +336,12 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
         return;
     }
 
+    /*Animation de chargement*/
     private void createLoadingFragment(){
         this.manageFragment(new LoadingFragment());
     }
 
-
+    /* Crée un nouveau fragment contenant la liste des résultats*/
     private void createListFragment(){
         ListeFragment list = new ListeFragment();
 
@@ -346,6 +353,7 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
         this.manageFragment(list);
     }
 
+    /* Crée un nouveau fragment contenant la map*/
     private void createMapFragment(){
         CustomMapFragment mapFragment = new CustomMapFragment();
 
@@ -356,7 +364,7 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
         this.manageFragment(mapFragment);
     }
 
-
+    /*Gestion du bouton de Retour*/
     @Override
     public boolean onSupportNavigateUp() {
 
@@ -410,6 +418,7 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
         return true;
     }
 
+    /*Enregistrement des préférences de l'utilisateur dans les settings*/
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection and select the MAP Type
