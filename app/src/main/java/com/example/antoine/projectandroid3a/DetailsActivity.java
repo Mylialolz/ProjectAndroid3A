@@ -16,6 +16,7 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
 
+/*Traitement et affichage des données de chaque piste cyclable*/
 public class DetailsActivity extends AppCompatActivity implements DataFromHttpRequest, ErrorInterface {
 
     public static final String RESULT_INTENT_DETAILS_ACTIVITY = "VOIR_MAP";
@@ -51,7 +52,7 @@ public class DetailsActivity extends AppCompatActivity implements DataFromHttpRe
 
 
     }
-
+    /*Charge le fragment Map si la permission est accordée*/
     private void initMapFragment(int mapPermissionGranted) {
         if(mapPermissionGranted > 0) {
             CustomMapFragment mapFragment = new CustomMapFragment();
@@ -73,7 +74,8 @@ public class DetailsActivity extends AppCompatActivity implements DataFromHttpRe
 
         }
     }
-
+    
+    /*Met en forme le texte descriptif d'une piste cyclable*/
     private void setTextWithDetailedInformation() {
         TextView txt = (TextView) findViewById(R.id.textDetails);
 
@@ -108,7 +110,7 @@ public class DetailsActivity extends AppCompatActivity implements DataFromHttpRe
     }
 
 
-
+    /*Charge le bouton favori et le met en forme selon l'appartenance de la piste aux favoris*/
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -129,7 +131,7 @@ public class DetailsActivity extends AppCompatActivity implements DataFromHttpRe
     }
 
 
-
+    /*Gère l'ajout aux Favoris*/
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
