@@ -8,4 +8,7 @@ import java.util.List;
 
 public interface DataFromHttpRequest {
     public List<PisteReseauCyclable> getDataList();
+
+    public void sendHttpRequestFromFragment();
+
 }

@@ -403,19 +403,12 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
         fragmentTransaction.commit();
     }
 
-
-
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_item, menu);
         return true;
     }
-
-
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -437,7 +430,6 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
 
     }
 
-
     public PisteCyclabeHttpRequestHandler getHttpRequestHandler() {
         return httpRequestHandler;
     }
@@ -445,6 +437,11 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
     @Override
     public List<PisteReseauCyclable> getDataList() {
         return mList;
+    }
+
+    @Override
+    public void sendHttpRequestFromFragment() {
+        this.sendHttpRequest();
     }
 
     @Override

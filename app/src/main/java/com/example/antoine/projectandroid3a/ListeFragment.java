@@ -50,6 +50,9 @@ public class ListeFragment extends Fragment {
         mFavorisAffiches = Integer.valueOf(this.getArguments().getString(MainActivity.PRINTING_FAVORITES)) == 1 ? true : false;
         dataList = tunnel.getDataList(); // recuperation de la reference sur la liste des donnees apres la requete http
 
+        tunnel.sendHttpRequestFromFragment();
+
+
         List<ListeData> list = new ArrayList<>();
         for(int i = 0; i < dataList.size(); ++i){
 
