@@ -2,6 +2,7 @@ package com.example.antoine.projectandroid3a;
 
 /**
  * Created by Antoine on 23/09/2016.
+ * Stocke l'image et le texte des éléments de la liste
  */
 
 public class ListeData {
