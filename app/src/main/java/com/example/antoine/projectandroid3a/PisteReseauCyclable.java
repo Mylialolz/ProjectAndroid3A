@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by Antoine on 23/09/2016.
+ * Vérification et extraction des données du JSON*/
  */
 
 public class PisteReseauCyclable {
