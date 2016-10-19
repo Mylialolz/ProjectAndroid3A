@@ -27,8 +27,10 @@ public class LoadingFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_loading, container, false);
+
         ProgressBar spinner = (ProgressBar)rootView.findViewById(R.id.progressBar);
-        spinner.getIndeterminateDrawable().setColorFilter(Color.parseColor("#FF358B"), android.graphics.PorterDuff.Mode.SRC_ATOP);;
+        spinner.getIndeterminateDrawable().setColorFilter(Color.parseColor("#FF358B") // couleur de la progress bar
+                                                            , android.graphics.PorterDuff.Mode.SRC_ATOP);; // mode progress bar
 
         return rootView;
     }

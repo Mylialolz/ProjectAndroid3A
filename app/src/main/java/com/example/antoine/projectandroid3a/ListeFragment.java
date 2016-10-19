@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,7 +67,6 @@ public class ListeFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         if(mEtatNFavorisAffiches == true) { // Autorisation du swipe seulement si les favoris ne sont pas affiches. Le swipe n'a pas d'utilité pour les favoris (aucune raison de rafaichir la liste)
 
             swipe.setOnRefreshListener(ListeFragment.this);
-            Log.d("ERROR", "favori");
         }
         else {
             swipe.setEnabled(false);
