@@ -8,8 +8,9 @@ import java.util.List;
  */
 
 public interface DataFromHttpRequest {
-    List<PisteReseauCyclable> getDataList();
 
-    void sendHttpRequestFromFragment();
+    List<PisteReseauCyclable> getDataList(); // recuperation des donnes issues de la requete http sous la forme d'une liste
+
+    void sendHttpRequestFromFragment(); // relancer la requete http depuis un fragment
 
 }

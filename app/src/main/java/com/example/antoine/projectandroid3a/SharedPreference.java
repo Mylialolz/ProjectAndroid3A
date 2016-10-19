@@ -25,7 +25,7 @@ public class SharedPreference {
         super();
     }
 
-    public void saveFavorites(Context context, List<PisteReseauCyclable> favorites) {
+    public static void saveFavorites(Context context, List<PisteReseauCyclable> favorites) {
         SharedPreferences sharedPref;
         SharedPreferences.Editor editor;
 
@@ -37,7 +37,7 @@ public class SharedPreference {
         editor.commit();
     }
 
-    public void addFavorite(Context context, PisteReseauCyclable piste){
+    public static void addFavorite(Context context, PisteReseauCyclable piste){
         List<PisteReseauCyclable> favorites = getFavorites(context);
         if(favorites == null)
             favorites = new ArrayList<PisteReseauCyclable>();
@@ -45,7 +45,7 @@ public class SharedPreference {
         saveFavorites(context, favorites);
     }
 
-    public void removeFavorite(Context context, PisteReseauCyclable piste){
+    public static void removeFavorite(Context context, PisteReseauCyclable piste){
         ArrayList<PisteReseauCyclable> favorites = getFavorites(context);
         if(favorites != null){
             favorites.remove(piste);
@@ -53,7 +53,7 @@ public class SharedPreference {
         }
     }
 
-    public ArrayList<PisteReseauCyclable> getFavorites(Context context){
+    public static ArrayList<PisteReseauCyclable> getFavorites(Context context){
         SharedPreferences sharedPref;
         List<PisteReseauCyclable> favorites;
 
@@ -74,7 +74,7 @@ public class SharedPreference {
     }
 
 
-    public boolean isItemInFavorites(PisteReseauCyclable data, Context context) {
+    public static boolean isItemInFavorites(PisteReseauCyclable data, Context context) {
 
         ArrayList<PisteReseauCyclable> listeFavoris = getFavorites(context);
 
@@ -89,7 +89,7 @@ public class SharedPreference {
         return isFavored;
     }
 
-    private boolean checkItem(ArrayList<PisteReseauCyclable> list, PisteReseauCyclable data){
+    private static boolean checkItem(ArrayList<PisteReseauCyclable> list, PisteReseauCyclable data){
         boolean ret = false;
         for(int i = 0; i < list.size(); ++i){
             if(list.get(i).equals(data)) {
@@ -100,14 +100,14 @@ public class SharedPreference {
         return ret;
     }
 
-    public void toastValide(Context context){
+    public static void toastValide(Context context){
         Toast.makeText(context
                         , "La piste a été ajoutée en tant que favorite"
                         , Toast.LENGTH_LONG).show();
     }
 
 
-    public void toastErreur(Context context, int codeErreur){
+    public static void toastErreur(Context context, int codeErreur){
 
         switch (codeErreur)
         {
@@ -128,7 +128,7 @@ public class SharedPreference {
     }
 
 
-    public void toastConfirmationSuppressionFavoris(Context context){
+    public static void toastConfirmationSuppressionFavoris(Context context){
         Toast.makeText(context
                 , "Piste favorie supprimée"
                 , Toast.LENGTH_LONG).show();

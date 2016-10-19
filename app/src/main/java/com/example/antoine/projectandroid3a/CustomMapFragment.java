@@ -30,20 +30,19 @@ import java.util.List;
  */
 public class CustomMapFragment extends Fragment {
 
-    private DataFromHttpRequest tunnel; // tunnel de communication entre l'activité et le fragment
+    private DataFromHttpRequest mTunnel; // mTunnel de communication entre l'activité et le fragment
 
-    private List<PisteReseauCyclable> mDataList; // donnees a maper
+    private List<PisteReseauCyclable> mDataListe; // donnees a maper
+    private List<String> mMarkerUniciteListe; // sert a verifier l'unicite des markers affiches par nom de voie. Objectif : réduction du nombre de markers affiches
 
-    private List<String> mNomVoieAffichee;
-
-    private int mItemToFocusOn; // index de l'item sur lequel on doit centrer la map par defaut à l'initialisation
-    private LatLng markerToFocusOn;
+    private int mTargetItem; // index de l'item sur lequel on doit centrer la map par defaut à l'initialisation
+    private LatLng mTargetMarker; // marker de l'item cible
 
     private MapView mMapView;
-    private GoogleMap googleMap;
+    private GoogleMap mGoogleMap;
 
-    private ProgressBar progressBar; // progress bar
-    private TextView messageChargement;
+    private ProgressBar mProgressBar; // progress bar
+    private TextView mMessageChargement;
 
     public CustomMapFragment() {
         // Required empty public constructor
@@ -55,27 +54,27 @@ public class CustomMapFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_custom_map, container, false);
 
-        mItemToFocusOn = Integer.valueOf(this.getArguments().getString(MainActivity.ITEM_TO_FOCUS_ON)); // recuperation de l'index de l'item sur lequel on doit centrer la map par defaut à l'initialisation
-        mDataList = tunnel.getDataList(); // recuperation des donnees a maper
+        mTargetItem = Integer.valueOf(this.getArguments().getString(MainActivity.ITEM_TO_FOCUS_ON)); // recuperation de l'index de l'item sur lequel on doit centrer la map par defaut à l'initialisation
+        mDataListe = mTunnel.getDataList(); // recuperation des donnees a maper
 
 
-        mNomVoieAffichee = new ArrayList<>();
-        double[] tempInit = mDataList.get(mItemToFocusOn).getGeo_point_2d(); // recuperation des coordonnes du marker sur lequel la map sera centree par defaut
-        markerToFocusOn = new LatLng(tempInit[0], tempInit[1]); // affectation des coordonnes a la variable memebre
+        mMarkerUniciteListe = new ArrayList<>();
+        double[] tempInit = mDataListe.get(mTargetItem).getGeo_point_2d(); // recuperation des coordonnes du marker sur lequel la map sera centree par defaut
+        mTargetMarker = new LatLng(tempInit[0], tempInit[1]); // affectation des coordonnes a la variable memebre
 
         mMapView = (MapView) rootView.findViewById(R.id.mapView);
 
         mMapView.onCreate(savedInstanceState); // creation de la map view
 
         // configuration de la progressbar pour indiquer le niveau chargement à l'utilisateur
-        messageChargement = (TextView)rootView.findViewById(R.id.messageMapChargement);
-        messageChargement.setText("La carte est cours de chargement...");
+        mMessageChargement = (TextView)rootView.findViewById(R.id.messageMapChargement);
+        mMessageChargement.setText("La carte est cours de chargement...");
 
-        progressBar = (ProgressBar) rootView.findViewById(R.id.progressBarMapFragment);
-        progressBar.setVisibility(View.VISIBLE);
-        progressBar.setIndeterminate(false);
-        progressBar.setProgress(0);
-        progressBar.setMax(mDataList.size());
+        mProgressBar = (ProgressBar) rootView.findViewById(R.id.progressBarMapFragment);
+        mProgressBar.setVisibility(View.VISIBLE);
+        mProgressBar.setIndeterminate(false);
+        mProgressBar.setProgress(0);
+        mProgressBar.setMax(mDataListe.size());
 
         try {
             MapsInitializer.initialize(getActivity().getApplicationContext());
@@ -86,45 +85,47 @@ public class CustomMapFragment extends Fragment {
         mMapView.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap mMap) {
-                googleMap = mMap;
+                mGoogleMap = mMap;
 
                 // type de vue de la map (satellite ou habituelle)
                 if(MainActivity.getMapType().equals("SATELLITE")){mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);}
                 else{mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);}
 
                 // For showing a move to my location button
-                googleMap.setMyLocationEnabled(true);
+                mGoogleMap.setMyLocationEnabled(true);
 
 
-                for(int i = 0; i < mDataList.size(); ++i){
+                for(int i = 0; i < mDataListe.size(); ++i){
 
-                    PisteReseauCyclable data = mDataList.get(i); // recuperation de la ieme piste cyclable
-                    LatLng latCourante = new LatLng(data.getGeo_point_2d()[0], data.getGeo_point_2d()[1]); // recuperation coordonnes marker
+                    PisteReseauCyclable dataCourante = mDataListe.get(i); // recuperation de la ieme piste cyclable
+                    LatLng latCourante = new LatLng(dataCourante.getGeo_point_2d()[0]
+                                                                , dataCourante.getGeo_point_2d()[1]); // recuperation coordonnees marker
 
-                    if(!SearchInList.contains(mNomVoieAffichee, data.getNom_voie())){
-                        googleMap.addMarker(new MarkerOptions().position(latCourante) // ajout du marker correspond à la piste cyclable i
-                                .title(data.getCompleteStreetNameWithArdt())
-                                .snippet(data.getTypologie_simple()));
+                    if(!SearchInList.contains(mMarkerUniciteListe, dataCourante.getNom_voie())) // verification de l'uncite du marker sur la map
+                    {
+                        mGoogleMap.addMarker(new MarkerOptions().position(latCourante) // ajout du marker correspond à la piste cyclable i
+                                .title(dataCourante.getCompleteStreetNameWithArdt())
+                                .snippet(dataCourante.getTypologie_simple()));
 
-                        mNomVoieAffichee.add(data.getNom_voie());
+                        mMarkerUniciteListe.add(dataCourante.getNom_voie()); // acquittement de l'unicite
                     }
 
-                    PolylineOptions line = MapLineDrawer.drawLineBetweenGeoPoints(data.getGeo_shape().getCoordinates() // configuration de la piste cyclable
+                    PolylineOptions ligneCourante = MapLineDrawer.drawLineBetweenGeoPoints(dataCourante.getGeo_shape().getCoordinates() // configuration de la piste cyclable
                                                                                     , 4                                 // epaisseur de la piste cyclable
                                                                                     , Color.RED);                       // couleur de la piste cyclable
 
-                    googleMap.addPolyline(line); // dessin de la piste cyclable sur la map
+                    mGoogleMap.addPolyline(ligneCourante); // dessin de la piste cyclable sur la map
 
-                    progressBar.incrementProgressBy(1); // ne fonctionne pas
+                    mProgressBar.incrementProgressBy(1); // ne fonctionne pas
                 }
 
-                messageChargement.setText("");
-                progressBar.setVisibility(View.GONE); // disparition de la progress bar
+                mMessageChargement.setText("");
+                mProgressBar.setVisibility(View.GONE); // disparition de la progress bar
                 mMapView.onResume(); // affichage de la map
 
                 // For zooming automatically to the location of the marker
-                CameraPosition cameraPosition = new CameraPosition.Builder().target(markerToFocusOn).zoom(10).build();
-                googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                CameraPosition cameraPosition = new CameraPosition.Builder().target(mTargetMarker).zoom(10).build();
+                mGoogleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
             }
         });
 
@@ -159,7 +160,7 @@ public class CustomMapFragment extends Fragment {
     @Override
     public void onAttach(Context context){
         super.onAttach(context);
-        tunnel = (DataFromHttpRequest) context;
+        mTunnel = (DataFromHttpRequest) context;
     }
 
 

@@ -19,37 +19,32 @@ import java.util.List;
 /*Traitement et affichage des données de chaque piste cyclable*/
 public class DetailsActivity extends AppCompatActivity implements DataFromHttpRequest, ErrorInterface {
 
-    public static final String RESULT_INTENT_DETAILS_ACTIVITY = "VOIR_MAP";
-    public static final int REQUEST_CODE_DETAILS_ACTIVITY = 1;
-    public static final String PREFS_FILE = "PREF";
-    public static final String PREFS_KEY ="RECORD";
+    private final String mLineSep = System.getProperty("line.separator"); // \n
 
-    public final String lineSep = System.getProperty("line.separator");
-
-    private List<PisteReseauCyclable> list;
-    private PisteReseauCyclable mPiste;
-    private Menu mMenu;
-    private final SharedPreference favorites = new SharedPreference();
+    private PisteReseauCyclable mPiste; // piste dont il faut afficher les détails
+    private List<PisteReseauCyclable> mDataListe; // liste avec un et un seul élement dont il faut afficher la position (contrainte imposee par "CustomMapFragment")
+    private Menu mMenu; // menu de l'appbar
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_details);
+
         this.setTitle("Détails sur la piste");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        final String dataFromMainActivity = getIntent().getStringExtra(MainActivity.EXTRA_MESSAGE);
-        final int mapPermissionGranted = Integer.valueOf(getIntent().getStringExtra(MainActivity.PERMISSION_MAP));
+        final String dataFromMainActivity = getIntent().getStringExtra(MainActivity.EXTRA_MESSAGE); // String sous format JSON qui décrit la piste dont il faut afficher les details
+        final int mapPermissionGranted = Integer.valueOf(getIntent().getStringExtra(MainActivity.PERMISSION_MAP)); // check de la permission pour afficher la map
 
-        Gson gson = new Gson();
-        mPiste = gson.fromJson(dataFromMainActivity, PisteReseauCyclable.class);
-        list = new ArrayList<>();
-        list.add(mPiste);
-        setTextWithDetailedInformation();
+        mPiste =  new Gson().fromJson(dataFromMainActivity, PisteReseauCyclable.class); // String JSON to PisteReseauCyclable
 
-        initMapFragment(mapPermissionGranted);
+        mDataListe = new ArrayList<>(); // init de la liste pour creer
+        mDataListe.add(mPiste);
 
+        setTextWithDetailedInformation(); // affichage des details sur la piste
+        initMapFragment(mapPermissionGranted); // charge la map a partir de la liste "mDataListe"
 
     }
     /*Charge le fragment Map si la permission est accordée*/
@@ -79,7 +74,7 @@ public class DetailsActivity extends AppCompatActivity implements DataFromHttpRe
     private void setTextWithDetailedInformation() {
         TextView txt = (TextView) findViewById(R.id.textDetails);
 
-        String intro = "Quelques informations complémentaires sur la piste cyclable :" + lineSep;
+        String intro = "Quelques informations complémentaires sur la piste cyclable :" + mLineSep;
         txt.setText(intro);
         txt.append("\n");
 
@@ -87,25 +82,25 @@ public class DetailsActivity extends AppCompatActivity implements DataFromHttpRe
         SpannableString _localisation = new SpannableString(localisation);
         _localisation.setSpan(new UnderlineSpan(), 0, localisation.length(), 0);
         txt.append(_localisation);
-        txt.append(" " + mPiste.getCompleteStreetNameWithArdt() + "." + lineSep);
+        txt.append(" " + mPiste.getCompleteStreetNameWithArdt() + "." + mLineSep);
 
         String bois = "Zone boisée  :";
         SpannableString _bois = new SpannableString(bois);
         _bois.setSpan(new UnderlineSpan(), 0, bois.length(), 0);
         txt.append(_bois);
-        txt.append(" " + mPiste.getBois().toLowerCase() + "." + lineSep);
+        txt.append(" " + mPiste.getBois().toLowerCase() + "." + mLineSep);
 
         String typePiste = "Type de piste :";
         SpannableString _typePiste = new SpannableString(typePiste);
         _typePiste.setSpan(new UnderlineSpan(), 0, typePiste.length(), 0);
         txt.append(_typePiste);
-        txt.append(" " + mPiste.getTypologie().toLowerCase() + "." + lineSep);
+        txt.append(" " + mPiste.getTypologie().toLowerCase() + "." + mLineSep);
 
         String sensCirculation = "Sens de circulation :";
         SpannableString _sensCirculation = new SpannableString(sensCirculation);
         _sensCirculation.setSpan(new UnderlineSpan(), 0, sensCirculation.length(), 0);
         txt.append(_sensCirculation);
-        txt.append(" " + mPiste.getSens_velo().toLowerCase() + "." + lineSep + "\n");
+        txt.append(" " + mPiste.getSens_velo().toLowerCase() + "." + mLineSep + "\n");
 
     }
 
@@ -119,7 +114,8 @@ public class DetailsActivity extends AppCompatActivity implements DataFromHttpRe
 
         mMenu = menu;
         MenuItem favoritesMenu = mMenu.findItem(R.id.action_favorite);
-        final boolean isFavored = favorites.isItemInFavorites(mPiste, getApplicationContext());
+        final boolean isFavored = SharedPreference.isItemInFavorites(mPiste
+                                                                        , getApplicationContext());
         if(isFavored){
             favoritesMenu.setIcon(R.drawable.favored_white);
         }
@@ -137,16 +133,16 @@ public class DetailsActivity extends AppCompatActivity implements DataFromHttpRe
         switch (item.getItemId()) {
             case R.id.action_favorite :
 
-                final boolean isFavored = favorites.isItemInFavorites(mPiste, getApplicationContext());
-                if(isFavored != true){
-                    favorites.toastValide(getApplicationContext());
-                    favorites.addFavorite(getApplication(), mPiste);
+                final boolean estFavorite = SharedPreference.isItemInFavorites(mPiste
+                                                                                , getApplicationContext());
+                if(estFavorite != true){
+                    SharedPreference.toastValide(getApplicationContext());
+                    SharedPreference.addFavorite(getApplication(), mPiste);
                     mMenu.findItem(R.id.action_favorite).setIcon(R.drawable.favored_white);
                 }
                 else {
-                    favorites.toastErreur(getApplicationContext(), SharedPreference.ERREUR_DEJA_PRESENTE);
+                    SharedPreference.toastErreur(getApplicationContext(), SharedPreference.ERREUR_DEJA_PRESENTE);
                 }
-
 
                 break;
         }
@@ -169,7 +165,7 @@ public class DetailsActivity extends AppCompatActivity implements DataFromHttpRe
 
     @Override
     public List<PisteReseauCyclable> getDataList() {
-        return list;
+        return mDataListe;
     }
 
     @Override

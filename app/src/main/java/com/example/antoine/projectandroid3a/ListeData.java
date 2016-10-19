@@ -2,13 +2,13 @@ package com.example.antoine.projectandroid3a;
 
 /**
  * Created by Antoine on 23/09/2016.
- * Stocke l'image et le texte des éléments de la liste
+ * Classe des
  */
 
 public class ListeData {
 
-    private String message;
-    private int img;
+    private String mMessage;
+    private int mImg;
 
     public ListeData(String m, int img){
 
@@ -19,19 +19,19 @@ public class ListeData {
 
 
     public String getMessage() {
-        return message;
+        return mMessage;
     }
 
     public void setMessage(String message) {
-        this.message = message;
+        this.mMessage = message;
     }
 
     public int getImg() {
-        return img;
+        return mImg;
     }
 
     public void setImg(int img) {
-        this.img = img;
+        this.mImg = img;
     }
 }
 

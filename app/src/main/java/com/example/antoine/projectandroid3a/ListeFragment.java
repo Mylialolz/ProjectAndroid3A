@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,14 +22,16 @@ import java.util.List;
 public class ListeFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
 
-    private DataFromHttpRequest tunnel;
+    private DataFromHttpRequest mTunnel;
 
     private ListView mListView; // container pour afficher la liste
-    private List<PisteReseauCyclable> dataList;
+    private List<PisteReseauCyclable> mDataListe;
     private ListeAdapter mAdapter;
-    private int mMapPermissionGranted;
-    private boolean mFavorisAffiches;
-    private SharedPreference favoris;
+
+    private int mMapPermissionAccordee; // boolean pour savoir s'il est possible d'afficher la map en fonction de la permission acoordée par l'utilisation
+
+    private boolean mEtatNFavorisAffiches; // boolean pour savoir si la liste a afficher est la liste des favoris ou les donnes issues de la requete http
+
 
     public ListeFragment() {
         // Required empty public constructor
@@ -44,26 +47,32 @@ public class ListeFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         rootView.setBackgroundColor(Color.WHITE);
         mListView = (ListView)rootView.findViewById(R.id.listeView);
         setListView(rootView);
-        favoris = new SharedPreference();
 
-        mMapPermissionGranted = Integer.valueOf(this.getArguments().getString(MainActivity.PERMISSION_MAP));
-        mFavorisAffiches = Integer.valueOf(this.getArguments().getString(MainActivity.PRINTING_FAVORITES)) == 1 ? true : false;
-        dataList = tunnel.getDataList(); // recuperation de la reference sur la liste des donnees apres la requete http
+
+        mMapPermissionAccordee = Integer.valueOf(this.getArguments().getString(MainActivity.PERMISSION_MAP));
+        mEtatNFavorisAffiches = Integer.valueOf(this.getArguments().getString(MainActivity.PRINTING_FAVORITES)) == 1 ? true : false;
+        mDataListe = mTunnel.getDataList(); // recuperation de la reference sur la liste des donnees apres la requete http
 
         List<ListeData> list = new ArrayList<>();
-        for(int i = 0; i < dataList.size(); ++i){
+        for(int i = 0; i < mDataListe.size(); ++i){
 
-            list.add(new ListeData(dataList.get(i).getCompleteStreetNameWithArdt()
+            list.add(new ListeData(mDataListe.get(i).getCompleteStreetNameWithArdt()
                                         , R.drawable.bicycle2));
 
         }
 
-
         mAdapter = new ListeAdapter(getActivity(), list); // affichage de la liste
         mListView.setAdapter(mAdapter);
 
-        SwipeRefreshLayout swipe = (SwipeRefreshLayout)rootView.findViewById(R.id.swiperefresh);
-        swipe.setOnRefreshListener(ListeFragment.this);
+        SwipeRefreshLayout swipe = (SwipeRefreshLayout) rootView.findViewById(R.id.swiperefresh);
+        if(mEtatNFavorisAffiches == true) { // Autorisation du swipe seulement si les favoris ne sont pas affiches. Le swipe n'a pas d'utilité pour les favoris (aucune raison de rafaichir la liste)
+
+            swipe.setOnRefreshListener(ListeFragment.this);
+            Log.d("ERROR", "favori");
+        }
+        else {
+            swipe.setEnabled(false);
+        }
 
         // Inflate the layout for this fragment
         return rootView;
@@ -79,9 +88,9 @@ public class ListeFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                 if(position >= 0) {
                     Intent intent = new Intent(getActivity(), DetailsActivity.class);
 
-                    String detailedData = serializeDataForDetailsActivity(dataList.get(position));
+                    String detailedData = serializeDataForDetailsActivity(mDataListe.get(position));
                     intent.putExtra(MainActivity.EXTRA_MESSAGE, detailedData);
-                    intent.putExtra(MainActivity.PERMISSION_MAP, Integer.toString(mMapPermissionGranted));
+                    intent.putExtra(MainActivity.PERMISSION_MAP, Integer.toString(mMapPermissionAccordee));
 
 
                     getActivity().startActivity(intent);
@@ -98,26 +107,26 @@ public class ListeFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 
-                if(position >= 0 && mFavorisAffiches) {
+                if(position >= 0 && mEtatNFavorisAffiches) {
 
-                    PisteReseauCyclable data = dataList.get(position);
+                    PisteReseauCyclable data = mDataListe.get(position);
                     Context context = getActivity().getApplicationContext();
-                    final boolean estEnFavori = favoris.isItemInFavorites(data, context);
+                    final boolean estEnFavori = SharedPreference.isItemInFavorites(data, context);
 
                     if(estEnFavori){
-                        favoris.toastErreur(context, SharedPreference.ERREUR_DEJA_PRESENTE);
+                        SharedPreference.toastErreur(context, SharedPreference.ERREUR_DEJA_PRESENTE);
                     }
                     else {
-                        favoris.toastValide(context);
-                        favoris.addFavorite(context, data);
+                        SharedPreference.toastValide(context);
+                        SharedPreference.addFavorite(context, data);
                     }
 
                 }
 
-                if(position >= 0 && !mFavorisAffiches){
+                if(position >= 0 && !mEtatNFavorisAffiches){
 
-                    favoris.removeFavorite(getActivity().getApplicationContext(), dataList.get(position));
-                    favoris.toastConfirmationSuppressionFavoris(getActivity().getApplicationContext());
+                    SharedPreference.removeFavorite(getActivity().getApplicationContext(), mDataListe.get(position));
+                    SharedPreference.toastConfirmationSuppressionFavoris(getActivity().getApplicationContext());
                     ListeData objet = (ListeData) mListView.getItemAtPosition(position);
                     mAdapter.remove(objet);
                     mAdapter.notifyDataSetChanged();
@@ -137,19 +146,17 @@ public class ListeFragment extends Fragment implements SwipeRefreshLayout.OnRefr
      @Override
      public void onAttach(Context context){
          super.onAttach(context);
-         tunnel = (DataFromHttpRequest) context;
+         mTunnel = (DataFromHttpRequest) context;
      }
 
     private String serializeDataForDetailsActivity(PisteReseauCyclable data){
-
         Gson gson  = new Gson();
-
         return gson.toJson(data);
 
     }
 
     @Override
     public void onRefresh() {
-        tunnel.sendHttpRequestFromFragment();
+        mTunnel.sendHttpRequestFromFragment();
     }
 }

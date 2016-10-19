@@ -11,15 +11,13 @@ public class LigneReseauCyclable {
 
 
     @SerializedName("coordinates")
-    private double[][] coordinates;
-
+    private double[][] mCoordinates;
 
     public LigneReseauCyclable(){
 
     }
 
-
     public double[][] getCoordinates() {
-        return coordinates;
+        return mCoordinates;
     }
 }

@@ -15,7 +15,7 @@ import android.widget.TextView;
  */
 public class ErrorFragment extends Fragment {
 
-    private ErrorInterface listener; // tunnel de communication entre l'activity et le fragment. Permet de recuperer le message d'erreur
+    private ErrorInterface listener; // tunnel de communication entre l'activité et le fragment. Permet de recuperer le message d'erreur
 
     public ErrorFragment() {
     }
