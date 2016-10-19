@@ -11,7 +11,7 @@ import android.widget.Button;
 /*Gère les erreurs de réseau*/
 public class NetworkErrorFragment extends Fragment {
 
-    private TryHttpRequestAgain listener; // permet de communiquer avec la "MainActivity"
+    private TryHttpRequestAgain mTunnel; // permet de communiquer avec la "MainActivity"
 
     public NetworkErrorFragment() {
         // Required empty public constructor
@@ -29,7 +29,7 @@ public class NetworkErrorFragment extends Fragment {
         {
             @Override
             public void onClick(View v){
-             listener.tryHttpRequestAfterFail(); // appel de la fonction tryHttpRequestAfterFail() définie dans "MainActivity"
+             mTunnel.tryHttpRequestAfterFail(); // appel de la fonction tryHttpRequestAfterFail() définie dans "MainActivity"
             }
         });
 
@@ -41,7 +41,7 @@ public class NetworkErrorFragment extends Fragment {
     @Override
     public void onAttach(Context context){
         super.onAttach(context);
-        listener = (TryHttpRequestAgain) context;
+        mTunnel = (TryHttpRequestAgain) context;
     }
 
 

@@ -25,9 +25,9 @@ public class PisteCyclabeHttpRequestHandler {
 
     public static final String TAG_VOLLEY_REQUEST = "TAG_VOLLEY_REQUEST"; // tag pour annuler si besoin les requetes
 
-    private String HttpRequest; // texte de la requete
+    private String mHttpRequest; // texte de la requete
     private List<PisteReseauCyclable> mDataList; // liste de donnees recuperees apres la requete
-    private boolean firstRequest; // boolean pour savoir si la liste de donnees a besoin d'etre effacee avant d'etre actualisee
+    private boolean mFirstRequest; // boolean pour savoir si la liste de donnees a besoin d'etre effacee avant d'etre actualisee
 
     private static final int REQUEST_BACK_OFF_MULTIPLIER = 1;
     private static final int REQUEST_TIMEOUT = 7000;
@@ -42,7 +42,7 @@ public class PisteCyclabeHttpRequestHandler {
 
         // initialisation des donnees membres
         this.setHttpRequest(HttpRequest);
-        this.firstRequest = true;
+        this.mFirstRequest = true;
         this.mDataList = new ArrayList<>();
 
     }
@@ -109,11 +109,11 @@ public class PisteCyclabeHttpRequestHandler {
 
 
     public String getHttpRequest() {
-        return HttpRequest;
+        return mHttpRequest;
     }
 
     public void setHttpRequest(String httpRequest) {
-        HttpRequest = httpRequest;
+        mHttpRequest = httpRequest;
     }
 
     public List<PisteReseauCyclable> getDataList() {
@@ -125,10 +125,10 @@ public class PisteCyclabeHttpRequestHandler {
     }
 
     public boolean isFirstRequest() {
-        return firstRequest;
+        return mFirstRequest;
     }
 
     public void setFirstRequest(boolean b){
-        firstRequest = b;
+        mFirstRequest = b;
     }
 }
