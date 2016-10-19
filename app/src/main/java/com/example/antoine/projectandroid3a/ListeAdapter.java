@@ -29,8 +29,8 @@ public class ListeAdapter extends ArrayAdapter<ListeData>  {
 
         View itemV = LayoutInflater.from(getContext()).inflate(R.layout.itemlist, parent, false);
 
-        TextView txtV = (TextView)itemV.findViewById(R.id.itemTxt);
-        ImageView imgV = (ImageView) itemV.findViewById(R.id.itemImg);
+        TextView txtV = (TextView)itemV.findViewById(R.id.liste_itemTxt);
+        ImageView imgV = (ImageView) itemV.findViewById(R.id.liste_itemImg);
 
         ListeData sampleData = getItem(position);
 

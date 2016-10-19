@@ -35,7 +35,7 @@ public class PisteCyclabeHttpRequestHandler {
 
     /**
      * Constructeur de la classe qui s'occupe de lancer les requetes http grace a la libraire volley
-     * @param HttpRequest
+     * @param HttpRequest - requete http a executer sous forme de chaine de caracteres
      */
 
     public PisteCyclabeHttpRequestHandler(String HttpRequest){
@@ -120,15 +120,8 @@ public class PisteCyclabeHttpRequestHandler {
         return mDataList;
     }
 
-    public void setDataList(List<PisteReseauCyclable> mDataList) {
-        this.mDataList = mDataList;
-    }
-
     public boolean isFirstRequest() {
         return mFirstRequest;
     }
 
-    public void setFirstRequest(boolean b){
-        mFirstRequest = b;
-    }
 }

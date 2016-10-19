@@ -10,7 +10,7 @@
         android:text="Réessayer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/tryAgain"
+        android:id="@+id/f_networkError_buttonTryAgain"
         android:onClick="onClick"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
@@ -21,9 +21,9 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="Une erreur réseau est survenue. Veuillez vérifier vos paramètres de connexion et réessayer."
-        android:id="@+id/errorMsg"
+        android:id="@+id/f_networkError_errorMsg"
         android:layout_marginBottom="135dp"
-        android:layout_above="@+id/tryAgain"
+        android:layout_above="@+id/f_networkError_buttonTryAgain"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 </RelativeLayout>

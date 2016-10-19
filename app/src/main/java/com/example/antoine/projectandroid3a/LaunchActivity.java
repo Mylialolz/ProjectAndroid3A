@@ -29,9 +29,9 @@ public class LaunchActivity extends AppCompatActivity {
         int width = size.x;
         int height = size.y;*/
 
-        ImageView image = (ImageView)findViewById(R.id.imageView);
+        ImageView image = (ImageView)findViewById(R.id.a_launch_image);
         if(image != null){
-            ImageView imageView = (ImageView) findViewById(R.id.imageView);
+            ImageView imageView = (ImageView) findViewById(R.id.a_launch_image);
             GlideDrawableImageViewTarget imageViewTarget = new GlideDrawableImageViewTarget(imageView);
             Glide.with(this).load(R.raw.animated_bike).into(imageViewTarget);
         }
@@ -40,11 +40,11 @@ public class LaunchActivity extends AppCompatActivity {
         //setContentView(R.layout.activity_launch);
 
         /*Création d'un bouton de recherche et implémentation d'un listener*/
-        Button button = (Button) findViewById(R.id.buttonGo);
+        Button button = (Button) findViewById(R.id.a_launch_buttonGo);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                EditText inputZip = (EditText) findViewById(R.id.zipInput);
-                EditText inputKeyword = (EditText) findViewById(R.id.keyword);
+                EditText inputZip = (EditText) findViewById(R.id.a_launch_zipInput);
+                EditText inputKeyword = (EditText) findViewById(R.id.a_launch_keyword);
                 UserInput searchParameters = new UserInput();
                 searchParameters.setArr(inputZip.getText().toString());
                 searchParameters.setKeyword(inputKeyword.getText().toString());

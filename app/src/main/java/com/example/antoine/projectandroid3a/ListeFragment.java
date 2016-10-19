@@ -44,7 +44,7 @@ public class ListeFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         View rootView = inflater.inflate(R.layout.fragment_liste, container, false);
 
         rootView.setBackgroundColor(Color.WHITE);
-        mListView = (ListView)rootView.findViewById(R.id.listeView);
+        mListView = (ListView)rootView.findViewById(R.id.f_Liste_listView);
         setListView(rootView);
 
 
@@ -63,7 +63,7 @@ public class ListeFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         mAdapter = new ListeAdapter(getActivity(), list); // affichage de la liste
         mListView.setAdapter(mAdapter);
 
-        SwipeRefreshLayout swipe = (SwipeRefreshLayout) rootView.findViewById(R.id.swiperefresh);
+        SwipeRefreshLayout swipe = (SwipeRefreshLayout) rootView.findViewById(R.id.f_Liste_swipeRefresh);
         if(mEtatNFavorisAffiches == true) { // Autorisation du swipe seulement si les favoris ne sont pas affiches. Le swipe n'a pas d'utilité pour les favoris (aucune raison de rafaichir la liste)
 
             swipe.setOnRefreshListener(ListeFragment.this);

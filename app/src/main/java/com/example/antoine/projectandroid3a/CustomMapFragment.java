@@ -62,15 +62,15 @@ public class CustomMapFragment extends Fragment {
         double[] tempInit = mDataListe.get(mTargetItem).getGeo_point_2d(); // recuperation des coordonnes du marker sur lequel la map sera centree par defaut
         mTargetMarker = new LatLng(tempInit[0], tempInit[1]); // affectation des coordonnes a la variable memebre
 
-        mMapView = (MapView) rootView.findViewById(R.id.mapView);
+        mMapView = (MapView) rootView.findViewById(R.id.f_CustomMapFragment_mapView);
 
         mMapView.onCreate(savedInstanceState); // creation de la map view
 
         // configuration de la progressbar pour indiquer le niveau chargement à l'utilisateur
-        mMessageChargement = (TextView)rootView.findViewById(R.id.messageMapChargement);
+        mMessageChargement = (TextView)rootView.findViewById(R.id.f_CustomMapFragment_messageMapChargement);
         mMessageChargement.setText("La carte est cours de chargement...");
 
-        mProgressBar = (ProgressBar) rootView.findViewById(R.id.progressBarMapFragment);
+        mProgressBar = (ProgressBar) rootView.findViewById(R.id.f_CustomMapFragment_progressBarMap);
         mProgressBar.setVisibility(View.VISIBLE);
         mProgressBar.setIndeterminate(false);
         mProgressBar.setProgress(0);
@@ -95,9 +95,8 @@ public class CustomMapFragment extends Fragment {
                 mGoogleMap.setMyLocationEnabled(true);
 
 
-                for(int i = 0; i < mDataListe.size(); ++i){
+                for(PisteReseauCyclable dataCourante : mDataListe){
 
-                    PisteReseauCyclable dataCourante = mDataListe.get(i); // recuperation de la ieme piste cyclable
                     LatLng latCourante = new LatLng(dataCourante.getGeo_point_2d()[0]
                                                                 , dataCourante.getGeo_point_2d()[1]); // recuperation coordonnees marker
 

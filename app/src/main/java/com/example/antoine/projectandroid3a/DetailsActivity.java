@@ -56,14 +56,14 @@ public class DetailsActivity extends AppCompatActivity implements DataFromHttpRe
             mapFragment.setArguments(bundle);
 
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.detailFragment, mapFragment);
+            fragmentTransaction.replace(R.id.a_details_mapFragment, mapFragment);
             fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
         }
         else {
 
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.detailFragment, new ErrorFragment());
+            fragmentTransaction.replace(R.id.a_details_mapFragment, new ErrorFragment());
             fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
 
@@ -72,7 +72,7 @@ public class DetailsActivity extends AppCompatActivity implements DataFromHttpRe
     
     /*Met en forme le texte descriptif d'une piste cyclable*/
     private void setTextWithDetailedInformation() {
-        TextView txt = (TextView) findViewById(R.id.textDetails);
+        TextView txt = (TextView) findViewById(R.id.a_details_infoSup);
 
         String intro = "Quelques informations complémentaires sur la piste cyclable :" + mLineSep;
         txt.setText(intro);

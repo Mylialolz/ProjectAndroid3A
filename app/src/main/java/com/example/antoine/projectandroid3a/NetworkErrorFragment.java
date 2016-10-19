@@ -24,7 +24,7 @@ public class NetworkErrorFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_network_error, container, false);
 
 
-        Button button = (Button)rootView.findViewById(R.id.tryAgain);
+        Button button = (Button)rootView.findViewById(R.id.f_networkError_buttonTryAgain);
         button.setOnClickListener(new View.OnClickListener()
         {
             @Override

@@ -25,10 +25,10 @@ public class ErrorFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_permission_error, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_error, container, false);
 
         String msg = listener.getErrorMsg(); // recuperation du message d'erreur
-        TextView txt = (TextView)rootView.findViewById(R.id.permTxtError);
+        TextView txt = (TextView)rootView.findViewById(R.id.f_error_TxtError);
         txt.setText(msg); // affichage du message d'erreur
 
         return rootView;

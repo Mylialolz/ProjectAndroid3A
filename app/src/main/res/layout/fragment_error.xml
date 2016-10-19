@@ -3,16 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.antoine.projectandroid3a.PermissionErrorFragment">
+    tools:context="com.example.antoine.projectandroid3a.ErrorFragment">
 
     <!-- TODO: Update blank fragment layout -->
 
     <TextView
-        android:text="LOLILOL"
+        android:text="Une erreur est survenue"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:hint="center"
-        android:id="@+id/permTxtError"
+        android:id="@+id/f_error_TxtError"
         tools:layout_constraintRight_creator="1"
         tools:layout_constraintBottom_creator="1"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -26,4 +26,5 @@
         android:layout_marginLeft="20dp"
         android:layout_marginEnd="20dp"
         android:layout_marginRight="20dp" />
+
 </android.support.constraint.ConstraintLayout>

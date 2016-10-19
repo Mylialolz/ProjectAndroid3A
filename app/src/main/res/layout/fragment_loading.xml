@@ -9,7 +9,7 @@
     <ProgressBar
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@id/progressBar"
+        android:id="@+id/f_loading_progressBar"
         android:indeterminate="true"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
@@ -19,8 +19,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="31dp"
-        android:id="@+id/loadingInfo"
-        android:layout_above="@+id/progressBar"
+        android:id="@+id/f_loading_loadingInfo"
+        android:layout_above="@+id/f_loading_progressBar"
         android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

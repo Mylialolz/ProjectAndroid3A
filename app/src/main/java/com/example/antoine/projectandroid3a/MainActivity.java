@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.a_main_toolbar);
         setSupportActionBar(toolbar);
         if(getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
     /*Prépare la requête HTTP en fonction des paramètres entrés par le User*/
     private void initMemberVariables(UserInput searchParameter) {
         mRequeteHTTP = searchParameter.constructRequest();
-        tabLayout = (TabLayout)findViewById(R.id.tabLayout);
+        tabLayout = (TabLayout)findViewById(R.id.a_main_tabLayout);
         mList = new ArrayList<>();
         mAffichageFavoris = false;
         //emptyResultFromHttpRequest = true;
@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
 
     /*Gère l'affichage des favoris par appui sur le bouton flottant*/
     private void setFloatingActionButton() {
-        mFab = (FloatingActionButton) findViewById(R.id.floatingActionButton);
+        mFab = (FloatingActionButton) findViewById(R.id.a_main_Fab);
         mFab.setImageResource(R.drawable.favorite_white);
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,8 +137,7 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
                     if(mList.size() > 0)
                         createListFragment();
                     else {
-                        setErrorMsg(getString(R.string.ERREUR_AUCUN_FAVORI));
-                        createErrorFragment();
+                        createErrorFragment(getString(R.string.ERREUR_AUCUN_FAVORI));
                     }
                 }
                 else {
@@ -225,10 +224,13 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
                 if(!mList.isEmpty() && mPermissionInternet == true)
                     this.createListFragment();
                 else {
-                    if(mPermissionMap == false || mList.isEmpty()) {
-                        setErrorMsg(getString(R.string.ERREUR_NO_DATA));
-                        this.createErrorFragment();
+                    if(mPermissionInternet == true || mList.isEmpty()) {
+                        this.createErrorFragment(getString(R.string.ERREUR_NO_DATA));
                     }
+                    if(mPermissionMap == false){
+                        this.createErrorFragment("Permission map non accordée. Impossible d'afficher des éléments.");
+                    }
+
                 }
                 break;
             case 1 :
@@ -237,9 +239,11 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
                 if(!mList.isEmpty() && mPermissionMap == true)
                     this.createMapFragment();
                 else {
-                    if(mPermissionMap == false ||  !mList.isEmpty()) {
-                        setErrorMsg(getString(R.string.ERREUR_NO_DATA));
-                        this.createErrorFragment();
+                    if(mPermissionMap == true ||  !mList.isEmpty()) {
+                        this.createErrorFragment(getString(R.string.ERREUR_NO_DATA));
+                    }
+                    if(mPermissionMap == false){
+                        this.createErrorFragment("Permission map non accordée. Impossible d'afficher des éléments.");
                     }
                 }
                 break;
@@ -266,9 +270,10 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     mPermissionInternet = true;
-
+                    this.sendHttpRequest();
                 } else {
                     mPermissionInternet = false;
+                    this.createErrorFragment("Permission internet non accordée. Impossible d'afficher des éléments.");
                 }
                 return;
             }
@@ -303,8 +308,7 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
             Toast.makeText(getApplicationContext()
                                     , "Impossible de se connecter au serveur."
                                     , Toast.LENGTH_LONG).show();
-            setErrorMsg(getString(R.string.ERREUR_PERMISSION_INTERNET));
-            createErrorFragment();
+            createErrorFragment(getString(R.string.ERREUR_PERMISSION_INTERNET));
         }
 
     }
@@ -318,8 +322,7 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
                 this.createListFragment();
             }
             else {
-                setErrorMsg(getString(R.string.ERREUR_NO_DATA));
-                this.createErrorFragment();
+                this.createErrorFragment(getString(R.string.ERREUR_NO_DATA));
             }
             setTabLayout();
         }
@@ -398,13 +401,14 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
         this.manageFragment(new NetworkErrorFragment());
     }
 
-    private void createErrorFragment(){
+    private void createErrorFragment(String msg){
+        this.setErrorMsg(msg);
         this.manageFragment(new ErrorFragment());
     }
 
     private void manageFragment(Fragment fragment){
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.mainFragment, fragment);
+        fragmentTransaction.replace(R.id.a_main_displayFragment, fragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
