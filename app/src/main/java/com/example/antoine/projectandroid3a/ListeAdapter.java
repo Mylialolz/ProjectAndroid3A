@@ -1,6 +1,9 @@
 package com.example.antoine.projectandroid3a;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,7 +38,20 @@ public class ListeAdapter extends ArrayAdapter<ListeData>  {
         ListeData sampleData = getItem(position);
 
         txtV.setText(sampleData.getMessage());
-        imgV.setImageResource(sampleData.getImg());
+
+
+        /** Ne fonctionne pas
+         * Devait recolorer l'image en fonction de la voie
+         * */
+        Drawable drawable = getContext().getResources().getDrawable(sampleData.getImg());
+        //Log.d("COLOR", ColorHandler.selectColorFilterBasedOnVoie(sampleData.getVoie()));
+        int color = Color.parseColor(ColorHandler.selectColorFilterBasedOnVoie(sampleData.getVoie()));
+        //Log.d("COLOR", ColorHandler.selectColorFilterBasedOnVoie(sampleData.getVoie()));
+        drawable.setColorFilter(color
+                                     , PorterDuff.Mode.SRC_ATOP);
+        imgV.setImageDrawable(drawable);
+        //Log.d("COLOR", "ok");
+
 
         return itemV;
     }

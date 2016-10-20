@@ -56,7 +56,8 @@ public class ListeFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         for(int i = 0; i < mDataListe.size(); ++i){
 
             list.add(new ListeData(mDataListe.get(i).getCompleteStreetNameWithArdt()
-                                        , R.drawable.ic_location_p));
+                                                 , R.drawable.ic_location_on_black_48dp_white
+                                                 , mDataListe.get(i).getType_voie()));
 
         }
 

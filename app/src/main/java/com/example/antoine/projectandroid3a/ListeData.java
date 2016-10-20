@@ -9,11 +9,13 @@ public class ListeData {
 
     private String mMessage;
     private int mImg;
+    private String mVoie;
 
-    public ListeData(String m, int img){
+    public ListeData(String m, int img, String nomVoie){
 
         this.setMessage(m);
         this.setImg(img);
+        this.mVoie = nomVoie;
 
     }
 
@@ -33,5 +35,10 @@ public class ListeData {
     public void setImg(int img) {
         this.mImg = img;
     }
+
+    public void setVoie(String voie){ this.mVoie = voie;}
+
+    public String getVoie() { return mVoie;}
+
 }
 

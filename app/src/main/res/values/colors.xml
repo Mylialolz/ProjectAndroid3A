@@ -9,4 +9,12 @@
     <color name="navigationBarColor">#000000</color>
     <color name="launchColor">#26b8fc</color>
     <color name="hintEditTextLaunchActivity">#9CA1A4</color>
+
+
+    <color name ="colorAlea1">#110EE4</color>
+    <color name ="colorAlea2">#ff4081</color>
+    <color name ="colorAlea3">#0E9CE4</color>
+    <color name ="colorAlea4">#0AEA19</color>
+    <color name ="colorAlea5">#AB9D04</color>
+
 </resources>
