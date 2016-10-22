@@ -22,5 +22,12 @@
         android:visible="true"
         android:enabled="true" />
 
+    <item android:id="@+id/details"
+        android:title="Détails sur l'appli"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+        android:visible="true"
+        android:enabled="true" />
+
 
 </menu>

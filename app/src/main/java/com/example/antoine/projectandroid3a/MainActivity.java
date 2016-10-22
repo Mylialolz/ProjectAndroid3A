@@ -2,6 +2,7 @@ package com.example.antoine.projectandroid3a;
 
 import android.Manifest;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -434,6 +435,10 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
             case R.id.map_typeEarth:
                 TYPE_MAP = "SATELLITE";
                 if(mCurrentTab == TAB_MAP){this.createMapFragment();}
+                return true;
+            case R.id.details:
+                //Intent intent = new Intent(MainActivity.this, DetailsOnAppActivity.class);
+                //startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
