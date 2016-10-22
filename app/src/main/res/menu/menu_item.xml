@@ -22,7 +22,7 @@
         android:visible="true"
         android:enabled="true" />
 
-    <item android:id="@+id/details"
+    <item android:id="@+id/detailsAppActivity"
         android:title="Détails sur l'appli"
         android:orderInCategory="100"
         app:showAsAction="never"

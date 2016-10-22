@@ -436,9 +436,9 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
                 TYPE_MAP = "SATELLITE";
                 if(mCurrentTab == TAB_MAP){this.createMapFragment();}
                 return true;
-            case R.id.details:
-                //Intent intent = new Intent(MainActivity.this, DetailsOnAppActivity.class);
-                //startActivity(intent);
+            case R.id.detailsAppActivity:
+                Intent intent = new Intent(this, DetailsOnAppActivity.class);
+                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
