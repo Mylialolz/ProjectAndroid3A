@@ -3,9 +3,11 @@ package com.example.antoine.projectandroid3a;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,11 +55,17 @@ public class ListeFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         mDataListe = mTunnel.getDataList(); // recuperation de la reference sur la liste des donnees apres la requete http
 
         List<ListeData> list = new ArrayList<>();
-        for(int i = 0; i < mDataListe.size(); ++i){
+        for(PisteReseauCyclable e : mDataListe){
 
-            list.add(new ListeData(mDataListe.get(i).getCompleteStreetNameWithArdt()
-                                                 , R.drawable.ic_location_on_black_48dp_white
-                                                 , mDataListe.get(i).getType_voie()));
+            /** recuperation de la couleur a appliquer selon la voie (rue, boulevard, avenue, etc.) */
+            int color = Color.parseColor(ColorHandler.selectColorFilterBasedOnVoie(getActivity().getApplicationContext() // contexte
+                                                                                        , e.getType_voie())); // recuperation voie
+
+            Drawable drawable = DrawableHandler.setDrawableFromRessourcesAndApplyColorFilter(getActivity().getApplicationContext()
+                                                                                                , R.drawable.ic_location_on_black_48dp_white
+                                                                                                , color);
+            list.add(new ListeData(e.getCompleteStreetNameWithArdt()
+                                                        , drawable));
 
         }
 

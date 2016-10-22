@@ -9,14 +9,14 @@
 
     ]]> -->
     <item android:id="@+id/map_typeMap"
-        android:title="Carte"
+        android:title="Carte: Vue classique"
         android:orderInCategory="100"
         app:showAsAction="never"
         android:visible="true"
         android:enabled="true" />
 
     <item android:id="@+id/map_typeEarth"
-        android:title="Satellite"
+        android:title="Carte: Vue satellite"
         android:orderInCategory="100"
         app:showAsAction="never"
         android:visible="true"

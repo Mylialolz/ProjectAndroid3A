@@ -1,5 +1,7 @@
 package com.example.antoine.projectandroid3a;
 
+import android.graphics.drawable.Drawable;
+
 /**
  * Created by Antoine on 23/09/2016.
  * Classe des
@@ -9,13 +11,13 @@ public class ListeData {
 
     private String mMessage;
     private int mImg;
-    private String mVoie;
+    //private String mVoie;
+    private Drawable mDrawable;
 
-    public ListeData(String m, int img, String nomVoie){
+    public ListeData(String m, Drawable drawable){
 
         this.setMessage(m);
-        this.setImg(img);
-        this.mVoie = nomVoie;
+        this.mDrawable = drawable;
 
     }
 
@@ -36,9 +38,13 @@ public class ListeData {
         this.mImg = img;
     }
 
-    public void setVoie(String voie){ this.mVoie = voie;}
+    //public void setVoie(String voie){ this.mVoie = voie;}
 
-    public String getVoie() { return mVoie;}
+    //public String getVoie() { return mVoie;}
+
+    public Drawable getDrawable() {
+        return mDrawable;
+    }
 
 }
 

@@ -1,5 +1,6 @@
 package com.example.antoine.projectandroid3a;
 
+import android.content.Context;
 import android.widget.ImageView;
 
 import java.util.Random;
@@ -18,7 +19,6 @@ public class ColorHandler {
         Random r = new Random();
         return (r.nextInt(TOP_BOUND) + 1);
     }
-
 
     public static void applyFilter(ImageView imageView, int color){
         if(color > 0 && color <= TOP_BOUND) {
@@ -46,29 +46,30 @@ public class ColorHandler {
         }
     }
 
-    public static String selectColorFilterBasedOnVoie(String voie){
-        String _color = "#110EE4";
+    public static String selectColorFilterBasedOnVoie(Context context, String voie){
+        String _color = context.getResources().getString(R.color.colorAlea4);
         if(voie != null) {
-            switch (voie){
-                case "BOULEVARD" :case "BOULEVARD DE" :
-                    _color = "#110EE4";
+            char c = voie.charAt(0);
+            switch (c){
+                case 'B' :
+                    _color = context.getResources().getString(R.color.colorAlea1);
                     break;
-                case "RUE" :case "RUE DE" :
-                    _color = "#ff4081";
+                case 'R' :
+                    _color = context.getResources().getString(R.color.colorAlea2);
                     break;
-                case "PLACE" :case "PLACE DE" :
-                    _color = "#0E9CE4";
+                case 'P' :
+                    _color = context.getResources().getString(R.color.colorAlea3);
                     break;
-                case "QUAI" :  case "QUAI DE" :
-                    _color = "#0AEA19";
+                case 'Q' :
+                    _color = context.getResources().getString(R.color.colorAlea4);
                     break;
-                case "AVENUE" : case "AVENUE DE" : case "AVENUE DU" :
-                    _color = "#AB9D04";
+                case 'A' :
+                    _color = context.getResources().getString(R.color.colorAlea5);
                     break;
                 default:break;
             }
         }
-        return _color;
+        return new String("#" + _color.substring(3).toUpperCase());
     }
 
 }
