@@ -130,7 +130,7 @@ public class SharedPreference {
 
     public static void toastConfirmationSuppressionFavoris(Context context){
         Toast.makeText(context
-                , "Piste favorie supprimée"
+                , "Piste favorite supprimée"
                 , Toast.LENGTH_LONG).show();
     }
 
