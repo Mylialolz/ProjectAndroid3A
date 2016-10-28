@@ -10,7 +10,7 @@ import android.widget.TextView;
 public class DetailsOnAppActivity extends AppCompatActivity {
 
     private static String[] DEPENDENCIES = {
-            "En utilisant les librairies suivantes :",
+            "En utilisant les librairies sous license Apache 2.0 suivantes :",
             "com.android.support:appcompat-v7:24.2.0",
             "com.android.support.constraint:constraint-layout:1.0.0-alpha8",
             "com.android.support:support-v4:24.2.0",
