@@ -19,7 +19,6 @@ public class DetailsOnAppActivity extends AppCompatActivity {
             "com.google.code.gson:gson:2.2.4",
             "com.google.android.gms:play-services:9.4.0",
             "com.android.support:multidex:1.0.1",
-            "com.github.johnkil.android-progressfragment:progressfragment:1.4.+",
             "com.android.support:design:24.2.0"
     } ;
 
@@ -27,9 +26,18 @@ public class DetailsOnAppActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details_on_app);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         TextView arrayDependencies = (TextView)findViewById(R.id.array_dependencies);
         for (String str : DEPENDENCIES) {
             arrayDependencies.append(str+"\n\n");
         }
     }
+
+
+    @Override
+    public boolean onSupportNavigateUp(){
+        finish();
+        return true;
+    }
+
 }

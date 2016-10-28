@@ -84,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
         setFloatingActionButton();
         askForPermissions();
 
+
     }
     
     /*Prépare la requête HTTP en fonction des paramètres entrés par le User*/
@@ -457,7 +458,16 @@ public class MainActivity extends AppCompatActivity implements DataFromHttpReque
 
     @Override
     public void sendHttpRequestFromFragment() {
-        this.sendHttpRequest();
+        if(mPermissionInternet == true) {
+            final MainActivity activity = this;
+            getHttpRequestHandler().launchHttpRequest(mRequestQueue, activity);
+        }
+        else {
+            Toast.makeText(getApplicationContext()
+                    , "Impossible de se connecter au serveur."
+                    , Toast.LENGTH_LONG).show();
+            createErrorFragment(getString(R.string.ERREUR_PERMISSION_INTERNET));
+        }
     }
 
     @Override

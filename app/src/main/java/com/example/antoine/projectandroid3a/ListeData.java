@@ -10,8 +10,6 @@ import android.graphics.drawable.Drawable;
 public class ListeData {
 
     private String mMessage;
-    private int mImg;
-    //private String mVoie;
     private Drawable mDrawable;
 
     public ListeData(String m, Drawable drawable){
@@ -29,18 +27,6 @@ public class ListeData {
     public void setMessage(String message) {
         this.mMessage = message;
     }
-
-    public int getImg() {
-        return mImg;
-    }
-
-    public void setImg(int img) {
-        this.mImg = img;
-    }
-
-    //public void setVoie(String voie){ this.mVoie = voie;}
-
-    //public String getVoie() { return mVoie;}
 
     public Drawable getDrawable() {
         return mDrawable;

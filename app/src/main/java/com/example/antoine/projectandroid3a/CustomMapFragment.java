@@ -100,6 +100,7 @@ public class CustomMapFragment extends Fragment {
                     LatLng latCourante = new LatLng(dataCourante.getGeo_point_2d()[0]
                                                                 , dataCourante.getGeo_point_2d()[1]); // recuperation coordonnees marker
 
+
                     if(!SearchInList.contains(mMarkerUniciteListe, dataCourante.getNom_voie())) // verification de l'uncite du marker sur la map
                     {
                         mGoogleMap.addMarker(new MarkerOptions().position(latCourante) // ajout du marker correspond à la piste cyclable i

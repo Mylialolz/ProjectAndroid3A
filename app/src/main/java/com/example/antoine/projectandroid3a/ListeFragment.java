@@ -137,9 +137,9 @@ public class ListeFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                     mAdapter.remove(objet);
                     mAdapter.notifyDataSetChanged();
 
-                    if(mAdapter.isEmpty()){
+                   /* if(mAdapter.isEmpty()){
                         ((MainActivity)getActivity()).setErrorMsg(getString(R.string.ERREUR_AUCUN_FAVORI));
-                    }
+                    }*/
 
                 }
 
