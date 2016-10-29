@@ -18,8 +18,8 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.maps.android.clustering.ClusterManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +43,8 @@ public class CustomMapFragment extends Fragment {
 
     private ProgressBar mProgressBar; // progress bar
     private TextView mMessageChargement;
+
+    private ClusterManager<CustomMarker> mClusterManager;
 
     public CustomMapFragment() {
         // Required empty public constructor
@@ -76,8 +78,11 @@ public class CustomMapFragment extends Fragment {
         mProgressBar.setProgress(0);
         mProgressBar.setMax(mDataListe.size());
 
+
+
         try {
             MapsInitializer.initialize(getActivity().getApplicationContext());
+            //mGoogleMap.setOnMarkerClickListener(mClusterManager);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -86,6 +91,10 @@ public class CustomMapFragment extends Fragment {
             @Override
             public void onMapReady(GoogleMap mMap) {
                 mGoogleMap = mMap;
+
+                mClusterManager = new ClusterManager<CustomMarker>(getActivity().getApplicationContext(), mGoogleMap);
+                mGoogleMap.setOnCameraIdleListener(mClusterManager);
+                mClusterManager.setRenderer(new OwnRenderer(getActivity().getApplicationContext(),mGoogleMap,mClusterManager));
 
                 // type de vue de la map (satellite ou habituelle)
                 if(MainActivity.getMapType().equals("SATELLITE")){mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);}
@@ -103,9 +112,13 @@ public class CustomMapFragment extends Fragment {
 
                     if(!SearchInList.contains(mMarkerUniciteListe, dataCourante.getNom_voie())) // verification de l'uncite du marker sur la map
                     {
-                        mGoogleMap.addMarker(new MarkerOptions().position(latCourante) // ajout du marker correspond à la piste cyclable i
+                        //mClusterManager.addItem(new MyItem(dataCourante.getGeo_point_2d()[0], dataCourante.getGeo_point_2d()[1]));
+
+                        mClusterManager.addItem(new CustomMarker(latCourante, dataCourante.getCompleteStreetNameWithArdt(), dataCourante.getTypologie_simple()));
+
+                       /* mGoogleMap.addMarker(new MarkerOptions().position(latCourante) // ajout du marker correspond à la piste cyclable i
                                 .title(dataCourante.getCompleteStreetNameWithArdt())
-                                .snippet(dataCourante.getTypologie_simple()));
+                                .snippet(dataCourante.getTypologie_simple()));*/
 
                         mMarkerUniciteListe.add(dataCourante.getNom_voie()); // acquittement de l'unicite
                     }
